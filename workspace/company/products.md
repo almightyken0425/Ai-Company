@@ -11,18 +11,18 @@
 
 ### Hatsuon
 - 狀態：開發中
-- 規格文件：`/Users/kenchio/Projects/ai-company/workspace/products/HatsuonSpec/`
-- 程式碼：`/Users/kenchio/Projects/ai-company/products/Hatsuon/`
+- 規格文件：`/Users/kenchio/Projects/ai-company/workspace/specs/HatsuonSpec/`
+- 程式碼：`/Users/kenchio/Projects/ai-company/code/HatsuonApp/`
 
 ### SuSuGiGi
 - 狀態：開發中
-- 規格文件：`/Users/kenchio/Projects/ai-company/workspace/products/SuSuGiGiSpec/`
-- 程式碼：`/Users/kenchio/Projects/ai-company/products/SuSuGiGi/`
+- 規格文件：`/Users/kenchio/Projects/ai-company/workspace/specs/SuSuGiGiSpec/`
+- 程式碼：`/Users/kenchio/Projects/ai-company/code/SuSuGiGiApp/`
 
 ### LiquidGlassHeaderTemplate
 - 狀態：已發布（OSS 模板）
 - 規格文件：（無獨立 Spec，直接看程式碼）
-- 程式碼：`/Users/kenchio/Projects/ai-company/products/LiquidGlassHeaderTemplate/`
+- 程式碼：`/Users/kenchio/Projects/ai-company/code/LiquidGlassHeaderTemplate/`
 
 ---
 
@@ -30,7 +30,7 @@
 
 ### UndergroundRemake
 - 狀態：規劃中
-- 規格文件：`/Users/kenchio/Projects/ai-company/workspace/products/UndergroundRemakeSpec/`
+- 規格文件：`/Users/kenchio/Projects/ai-company/workspace/specs/UndergroundRemakeSpec/`
 - 程式碼：尚未建立
 
 ---
@@ -41,13 +41,13 @@
 ```
 ### [產品名稱]
 - 狀態：[構想 / 開發中 / 已上線]
-- 規格文件：`/Users/kenchio/Projects/ai-company/workspace/products/[ProductSpec]/`
-- 程式碼：`/Users/kenchio/Projects/ai-company/products/[Product]/`
+- 規格文件：`/Users/kenchio/Projects/ai-company/workspace/specs/[ProductSpec]/`
+- 程式碼：`/Users/kenchio/Projects/ai-company/code/[Product]/`
 ```
 
 每個產品 Spec 目錄建議結構：
 ```
-workspace/products/[ProductSpec]/
+workspace/specs/[ProductSpec]/
 ├── product-context.md     ← 技術棧、設計哲學、商業模式
 ├── equity/                ← 股權帳本（Equity Accountant 建立）
 ├── user-stories/          ← Product Planner 產出
