@@ -8,7 +8,10 @@
       "Bash(echo \"products -> code: OK\")",
       "Bash(mv \"$BASE/workspace/products\" \"$BASE/workspace/specs\")",
       "Bash(echo \"workspace/products -> workspace/specs: OK\")",
-      "Bash(BASE=\"/c/Users/ken.chio/OneDrive - 勝和科技有限公司/文件/Repository/ai-company\" echo \"=== 資料夾結構 ===\" ls \"$BASE/\")"
+      "Bash(BASE=\"/c/Users/ken.chio/OneDrive - 勝和科技有限公司/文件/Repository/ai-company\" echo \"=== 資料夾結構 ===\" ls \"$BASE/\")",
+      "Bash(find 'C:\\\\Users\\\\ken.chio\\\\OneDrive - 勝和科技有限公司\\\\文件\\\\Repository\\\\ai-company\\\\workspace\\\\specs' -type f -name *atsuon* -o -name *Hatsuon*)",
+      "Bash(find 'C:/Users/ken.chio/OneDrive - 勝和科技有限公司/文件/Repository/ai-company' -name *.md -path */agent*)",
+      "Bash(find 'C:\\\\Users\\\\ken.chio\\\\OneDrive - 勝和科技有限公司\\\\文件\\\\Repository\\\\ai-company\\\\code\\\\HatsuonApp\\\\src' -name *.tsx -o -name *.jsx)"
     ]
   }
 }
