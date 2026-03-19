@@ -2,3 +2,4 @@ code/
 workspace/specs/HatsuonSpec/
 workspace/specs/SuSuGiGiSpec/
 workspace/specs/UndergroundRemakeSpec/
+.claude/settings.local.json
