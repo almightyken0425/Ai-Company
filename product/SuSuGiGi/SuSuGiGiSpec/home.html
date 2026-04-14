@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>SuSuGiGi — Liquid Glass · 首頁</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: #07060e;
+      font-family: -apple-system, 'PingFang TC', 'Noto Sans TC', sans-serif;
+    }
+
+    /* ─── Phone shell ─────────────────────────────── */
+    .phone {
+      width: 393px;
+      height: 852px;
+      border-radius: 52px;
+      overflow: hidden;
+      position: relative;
+      border: 1.5px solid rgba(255,255,255,0.10);
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.55), 0 40px 80px rgba(0,0,0,0.65);
+    }
+
+    /* ─── Background: pure PRIMARY_PURPLE gradient ── */
+    .bg {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(165deg,
+        #381d85 0%,    /* PRIMARY_PURPLE[600] */
+        #221250 40%,   /* PRIMARY_PURPLE[800] */
+        #160c35 100%   /* PRIMARY_PURPLE[900] */
+      );
+    }
+
+    /* ─── Content wrapper ─────────────────────────── */
+    .content {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* ─── Status bar + Header: absolute, float over scroll ── */
+    .status-bar {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 54px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      padding: 0 30px 10px;
+      z-index: 10;
+    }
+    .status-time {
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
+      letter-spacing: -0.3px;
+    }
+    .status-icons { display: flex; gap: 6px; align-items: center; }
+
+    /* ─── Glass token (shared by all floating elements) */
+    .glass-pill {
+      background: rgba(255,255,255,0.12);
+      backdrop-filter: blur(20px) saturate(160%);
+      -webkit-backdrop-filter: blur(20px) saturate(160%);
+      border: 1px solid rgba(255,255,255,0.18);
+      box-shadow:
+        0 2px 12px rgba(0,0,0,0.18),
+        inset 0 1px 0 rgba(255,255,255,0.30);
+    }
+
+    /* ─── Header: blur-through background (like Telegram nav bar) ── */
+    .header {
+      position: absolute;
+      top: 54px; left: 0; right: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 16px 10px;
+      z-index: 10;
+      /* Frosted glass — shows blurred scroll content through */
+      background: rgba(22, 12, 53, 0.55);   /* PRIMARY_PURPLE[900] tint */
+      backdrop-filter: blur(28px) saturate(180%);
+      -webkit-backdrop-filter: blur(28px) saturate(180%);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    /* Individual button pill (circle) */
+    .header-btn {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,0.82);
+      cursor: pointer;
+      border-radius: 999px;   /* circle pill */
+      transition: filter 0.15s;
+    }
+    .header-btn:hover { filter: brightness(1.15); }
+    /* Title — plain text only, no background */
+    .logo-plain {
+      font-size: 17px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.95);
+      letter-spacing: -0.2px;
+    }
+    /* Right side: two independent circle pills with a gap */
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* ─── Scroll area: full height, padded top so content starts below header ── */
+    .scroll {
+      position: absolute;
+      inset: 0;
+      overflow-y: auto;
+      padding-top: 110px;   /* status-bar 54 + header ~56 */
+      padding-bottom: 120px;
+      scrollbar-width: none;
+    }
+    .scroll::-webkit-scrollbar { display: none; }
+
+    /* ─── Period title ────────────────────────────── */
+    .period-title {
+      text-align: center;
+      font-size: 18px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.90);
+      padding: 16px 0 8px;
+    }
+
+    /* ─── Donut chart ─────────────────────────────── */
+    .chart-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      height: 220px;
+      margin-bottom: 8px;
+    }
+    .chart-center {
+      position: absolute;
+      text-align: center;
+      pointer-events: none;
+    }
+    .chart-label {
+      font-size: 13px;
+      color: rgba(255,255,255,0.50);
+      margin-bottom: 4px;
+    }
+    .chart-value {
+      font-size: 22px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.5px;
+    }
+
+    /* ─── Type header (支出 / 收入) ──────────────── */
+    .type-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px 8px;
+    }
+    .type-header-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.90);
+    }
+    .type-header-total {
+      font-size: 18px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.90);
+    }
+
+    /* ─── Section header (category row) ──────────── */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      cursor: pointer;
+      user-select: none;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      transition: background 0.15s;
+    }
+    .section-header:hover { background: rgba(255,255,255,0.04); }
+    .section-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .chevron {
+      width: 14px;
+      color: rgba(255,255,255,0.35);
+      font-size: 11px;
+      transition: transform 0.25s ease;
+      flex-shrink: 0;
+    }
+    .section-header.open .chevron { transform: rotate(90deg); }
+    .cat-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      background: rgba(255,255,255,0.09);
+      border: 1px solid rgba(255,255,255,0.10);
+    }
+    .section-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.88);
+    }
+    .section-total {
+      font-size: 16px;
+      color: rgba(255,255,255,0.55);
+    }
+
+    /* ─── Transaction rows ────────────────────────── */
+    .tx-rows {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .tx-rows.open { max-height: 500px; }
+    .tx-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px 10px 46px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .tx-left { flex: 1; margin-right: 16px; }
+    .tx-note {
+      font-size: 15px;
+      color: rgba(255,255,255,0.80);
+      margin-bottom: 2px;
+    }
+    .tx-date {
+      font-size: 13px;
+      color: rgba(255,255,255,0.35);
+    }
+    .tx-amount {
+      font-size: 15px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.80);
+    }
+
+    /* ─── FloatingActionBar ───────────────────────── */
+    .fab-bar {
+      position: absolute;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 208px;
+      height: 72px;
+      border-radius: 999px;
+      background: rgba(67, 35, 160, 0.72);  /* PRIMARY_PURPLE[500] glass */
+      backdrop-filter: blur(20px) saturate(160%);
+      -webkit-backdrop-filter: blur(20px) saturate(160%);
+      border: 1px solid rgba(255,255,255,0.18);
+      box-shadow:
+        0 8px 28px rgba(34, 18, 80, 0.55),
+        inset 0 1px 0 rgba(255,255,255,0.22);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding: 0 8px;
+      z-index: 20;
+    }
+    .fab-btn {
+      width: 56px;
+      height: 56px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,0.90);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .fab-btn:hover { background: rgba(255,255,255,0.12); }
+    .fab-btn svg { display: block; }
+  </style>
+</head>
+<body>
+<div class="phone">
+  <div class="bg"></div>
+
+  <div class="content">
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <svg width="16" height="11" viewBox="0 0 16 11" fill="white">
+          <rect x="0" y="7" width="3" height="4" rx="0.8" opacity="0.35"/>
+          <rect x="4" y="5" width="3" height="6" rx="0.8" opacity="0.55"/>
+          <rect x="8" y="2" width="3" height="9" rx="0.8" opacity="0.75"/>
+          <rect x="12" y="0" width="3" height="11" rx="0.8"/>
+        </svg>
+        <svg width="15" height="11" viewBox="0 0 15 11" fill="none">
+          <path d="M7.5 8.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3z" fill="white"/>
+          <path d="M3 5.8A6.3 6.3 0 0112 5.8" stroke="white" stroke-width="1.4" opacity="0.7"/>
+          <path d="M0.5 3A10.2 10.2 0 0114.5 3" stroke="white" stroke-width="1.4" opacity="0.4"/>
+        </svg>
+        <svg width="24" height="11" viewBox="0 0 24 11" fill="none">
+          <rect x="0.5" y="0.5" width="20" height="10" rx="3" stroke="white" stroke-opacity="0.6"/>
+          <rect x="2" y="2" width="15" height="7" rx="1.5" fill="white"/>
+          <path d="M22 3.5v4" stroke="white" stroke-opacity="0.4" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Header: blur-through bar / left = glass pill btn / center = plain text / right = two independent circle pills -->
+    <div class="header">
+      <div class="header-btn glass-pill">
+        <svg width="20" height="15" viewBox="0 0 20 15" fill="none">
+          <rect y="0"   width="20" height="2" rx="1" fill="currentColor"/>
+          <rect y="6.5" width="14" height="2" rx="1" fill="currentColor"/>
+          <rect y="13"  width="8"  height="2" rx="1" fill="currentColor"/>
+        </svg>
+      </div>
+      <span class="logo-plain">速速記記</span>
+      <div class="header-right">
+        <div class="header-btn glass-pill">
+          <svg width="17" height="17" viewBox="0 0 17 17" fill="none">
+            <circle cx="7.5" cy="7.5" r="5" stroke="currentColor" stroke-width="1.6"/>
+            <path d="M11.5 11.5L15 15" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="header-btn glass-pill">
+          <svg width="17" height="17" viewBox="0 0 17 17" fill="none">
+            <circle cx="8.5" cy="8.5" r="6.5" stroke="currentColor" stroke-width="1.5"/>
+            <circle cx="8.5" cy="8.5" r="2.2" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M8.5 2v1.5M8.5 13v1.5M2 8.5h1.5M13 8.5h1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll content -->
+    <div class="scroll">
+
+      <!-- Period title -->
+      <div class="period-title">今日</div>
+
+      <!-- Donut chart -->
+      <div class="chart-wrap">
+        <svg id="donut-svg" width="200" height="200" viewBox="0 0 200 200">
+          <circle cx="100" cy="100" r="80" fill="none"
+            stroke="rgba(255,255,255,0.06)" stroke-width="20"/>
+          <g id="segs"></g>
+        </svg>
+        <div class="chart-center">
+          <div class="chart-label">結餘</div>
+          <div class="chart-value">32,981,021</div>
+        </div>
+      </div>
+
+      <!-- 支出 section -->
+      <div class="type-header">
+        <span class="type-header-title">支出</span>
+        <span class="type-header-total">32,981,021</span>
+      </div>
+
+      <!-- 購物 category -->
+      <div class="section-header" id="sh-1" onclick="toggle(1)">
+        <div class="section-left">
+          <span class="chevron">▶</span>
+          <div class="cat-icon">🛍️</div>
+          <span class="section-title">購物</span>
+        </div>
+        <span class="section-total">32,109,000</span>
+      </div>
+      <div class="tx-rows" id="tx-1">
+        <div class="tx-row">
+          <div class="tx-left">
+            <div class="tx-note">購物</div>
+            <div class="tx-date">12/05</div>
+          </div>
+          <span class="tx-amount">$ 9,000</span>
+        </div>
+        <div class="tx-row">
+          <div class="tx-left">
+            <div class="tx-note">生活用品</div>
+            <div class="tx-date">12/05</div>
+          </div>
+          <span class="tx-amount">$ 9,000</span>
+        </div>
+        <div class="tx-row">
+          <div class="tx-left">
+            <div class="tx-note">購物</div>
+            <div class="tx-date">12/04</div>
+          </div>
+          <span class="tx-amount">$ 9,000</span>
+        </div>
+      </div>
+
+      <!-- 餐點 category -->
+      <div class="section-header" id="sh-2" onclick="toggle(2)">
+        <div class="section-left">
+          <span class="chevron">▶</span>
+          <div class="cat-icon">🍽️</div>
+          <span class="section-title">餐點</span>
+        </div>
+        <span class="section-total">32,109,000</span>
+      </div>
+      <div class="tx-rows" id="tx-2">
+        <div class="tx-row">
+          <div class="tx-left">
+            <div class="tx-note">午餐</div>
+            <div class="tx-date">12/05</div>
+          </div>
+          <span class="tx-amount">$ 9,000</span>
+        </div>
+        <div class="tx-row">
+          <div class="tx-left">
+            <div class="tx-note">晚餐</div>
+            <div class="tx-date">12/05</div>
+          </div>
+          <span class="tx-amount">$ 9,000</span>
+        </div>
+      </div>
+
+      <!-- 休閒娛樂 -->
+      <div class="section-header" id="sh-3" onclick="toggle(3)">
+        <div class="section-left">
+          <span class="chevron">▶</span>
+          <div class="cat-icon">🎮</div>
+          <span class="section-title">休閒娛樂</span>
+        </div>
+        <span class="section-total">32,109,000</span>
+      </div>
+      <div class="tx-rows" id="tx-3"></div>
+
+      <!-- 交通 -->
+      <div class="section-header" id="sh-4" onclick="toggle(4)">
+        <div class="section-left">
+          <span class="chevron">▶</span>
+          <div class="cat-icon">🚌</div>
+          <span class="section-title">交通</span>
+        </div>
+        <span class="section-total">4,500</span>
+      </div>
+      <div class="tx-rows" id="tx-4">
+        <div class="tx-row">
+          <div class="tx-left"><div class="tx-note">悠遊卡加值</div><div class="tx-date">12/05</div></div>
+          <span class="tx-amount">$ 1,000</span>
+        </div>
+        <div class="tx-row">
+          <div class="tx-left"><div class="tx-note">計程車</div><div class="tx-date">12/04</div></div>
+          <span class="tx-amount">$ 280</span>
+        </div>
+        <div class="tx-row">
+          <div class="tx-left"><div class="tx-note">高鐵</div><div class="tx-date">12/03</div></div>
+          <span class="tx-amount">$ 1,490</span>
+        </div>
+        <div class="tx-row">
+          <div class="tx-left"><div class="tx-note">YouBike</div><div class="tx-date">12/02</div></div>
+          <span class="tx-amount">$ 30</span>
+        </div>
+      </div>
+
+      <!-- 醫療 -->
+      <div class="section-header" id="sh-5" onclick="toggle(5)">
+        <div class="section-left">
+          <span class="chevron">▶</span>
+          <div class="cat-icon">🏥</div>
+          <span class="section-title">醫療健康</span>
+        </div>
+        <span class="section-total">2,800</span>
+      </div>
+      <div class="tx-rows" id="tx-5">
+        <div class="tx-row">
+          <div class="tx-left"><div class="tx-note">門診掛號</div><div class="tx-date">12/04</div></div>
+          <span class="tx-amount">$ 300</span>
+        </div>
+        <div class="tx-row">
+          <div class="tx-left"><div class="tx-note">藥局</div><div class="tx-date">12/04</div></div>
+          <span class="tx-amount">$ 850</span>
+        </div>
+        <div class="tx-row">
+          <div class="tx-left"><div class="tx-note">健身房月費</div><div class="tx-date">12/01</div></div>
+          <span class="tx-amount">$ 1,650</span>
+        </div>
+      </div>
+
+      <!-- 訂閱 -->
+      <div class="section-header" id="sh-6" onclick="toggle(6)">
+        <div class="section-left">
+          <span class="chevron">▶</span>
+          <div class="cat-icon">📱</div>
+          <span class="section-title">訂閱服務</span>
+        </div>
+        <span class="section-total">1,288</span>
+      </div>
+      <div class="tx-rows" id="tx-6">
+        <div class="tx-row">
+          <div class="tx-left"><div class="tx-note">Netflix</div><div class="tx-date">12/01</div></div>
+          <span class="tx-amount">$ 390</span>
+        </div>
+        <div class="tx-row">
+          <div class="tx-left"><div class="tx-note">Spotify</div><div class="tx-date">12/01</div></div>
+          <span class="tx-amount">$ 149</span>
+        </div>
+        <div class="tx-row">
+          <div class="tx-left"><div class="tx-note">iCloud+</div><div class="tx-date">12/01</div></div>
+          <span class="tx-amount">$ 90</span>
+        </div>
+        <div class="tx-row">
+          <div class="tx-left"><div class="tx-note">Adobe CC</div><div class="tx-date">12/01</div></div>
+          <span class="tx-amount">$ 659</span>
+        </div>
+      </div>
+
+      <!-- 其他 -->
+      <div class="section-header" id="sh-7" onclick="toggle(7)">
+        <div class="section-left">
+          <span class="chevron">▶</span>
+          <div class="cat-icon">📦</div>
+          <span class="section-title">其他</span>
+        </div>
+        <span class="section-total">3,200</span>
+      </div>
+      <div class="tx-rows" id="tx-7">
+        <div class="tx-row">
+          <div class="tx-left"><div class="tx-note">雜費</div><div class="tx-date">12/03</div></div>
+          <span class="tx-amount">$ 3,200</span>
+        </div>
+      </div>
+
+      <!-- 收入 section -->
+      <div class="type-header" style="margin-top: 8px;">
+        <span class="type-header-title">收入</span>
+        <span class="type-header-total">65,962,042</span>
+      </div>
+
+      <div class="section-header" id="sh-8" onclick="toggle(8)">
+        <div class="section-left">
+          <span class="chevron">▶</span>
+          <div class="cat-icon">💼</div>
+          <span class="section-title">薪資</span>
+        </div>
+        <span class="section-total">60,000</span>
+      </div>
+      <div class="tx-rows" id="tx-8">
+        <div class="tx-row">
+          <div class="tx-left"><div class="tx-note">月薪</div><div class="tx-date">12/01</div></div>
+          <span class="tx-amount">$ 60,000</span>
+        </div>
+      </div>
+
+      <div class="section-header" id="sh-9" onclick="toggle(9)">
+        <div class="section-left">
+          <span class="chevron">▶</span>
+          <div class="cat-icon">📈</div>
+          <span class="section-title">投資收益</span>
+        </div>
+        <span class="section-total">5,962,042</span>
+      </div>
+      <div class="tx-rows" id="tx-9">
+        <div class="tx-row">
+          <div class="tx-left"><div class="tx-note">股票股利</div><div class="tx-date">12/05</div></div>
+          <span class="tx-amount">$ 3,200,000</span>
+        </div>
+        <div class="tx-row">
+          <div class="tx-left"><div class="tx-note">ETF 配息</div><div class="tx-date">12/03</div></div>
+          <span class="tx-amount">$ 2,762,042</span>
+        </div>
+      </div>
+
+      <div class="section-header" id="sh-10" onclick="toggle(10)">
+        <div class="section-left">
+          <span class="chevron">▶</span>
+          <div class="cat-icon">🎁</div>
+          <span class="section-title">獎金</span>
+        </div>
+        <span class="section-total">0</span>
+      </div>
+      <div class="tx-rows" id="tx-10"></div>
+
+    </div><!-- /scroll -->
+
+    <!-- FloatingActionBar -->
+    <div class="fab-bar">
+      <div class="fab-btn" title="支出">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+          <path d="M5 11h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="fab-btn" title="轉帳">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+          <path d="M3 8h16M15 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M19 14H3M7 10l-4 4 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="fab-btn" title="收入">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+          <path d="M11 5v12M5 11h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /phone -->
+
+<script>
+  // Toggle section expand/collapse
+  function toggle(n) {
+    const sh = document.getElementById('sh-' + n);
+    const tx = document.getElementById('tx-' + n);
+    const isOpen = tx.classList.contains('open');
+    // close all
+    document.querySelectorAll('.tx-rows').forEach(el => el.classList.remove('open'));
+    document.querySelectorAll('.section-header').forEach(el => el.classList.remove('open'));
+    if (!isOpen) {
+      tx.classList.add('open');
+      sh.classList.add('open');
+    }
+  }
+
+  // Draw donut chart
+  (function() {
+    const cx = 100, cy = 100, r = 80;
+    const C = 2 * Math.PI * r;
+    const gap = 4;
+    // PRIMARY_PURPLE chart colors: [800][600][500][400]
+    const segs = [
+      { pct: 0.38, color: '#221250' },
+      { pct: 0.27, color: '#381d85' },
+      { pct: 0.22, color: '#4323a0' },
+      { pct: 0.13, color: '#6248b0' },
+    ];
+    const g = document.getElementById('segs');
+    let offset = -(C / 4);
+    segs.forEach(s => {
+      const len = s.pct * C - gap;
+      const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      c.setAttribute('cx', cx);
+      c.setAttribute('cy', cy);
+      c.setAttribute('r', r);
+      c.setAttribute('fill', 'none');
+      c.setAttribute('stroke', s.color);
+      c.setAttribute('stroke-width', '20');
+      c.setAttribute('stroke-dasharray', len + ' ' + (C - len));
+      c.setAttribute('stroke-dashoffset', -offset);
+      c.setAttribute('stroke-linecap', 'round');
+      g.appendChild(c);
+      offset += s.pct * C;
+    });
+  })();
+</script>
+</body>
+</html>

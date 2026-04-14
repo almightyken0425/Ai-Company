@@ -1,0 +1,62 @@
+﻿產品模組,角色,施工價值pt,維運價值pt,模組施工%,模組維護%,施工工時/次,維護工時/月
+Web Console,**UI Designer**,"2,650",128,19.7%,14.1%,1.3 人月,0.6h
+Web Console,**Web RD**,"2,600",100,19.3%,11.0%,1.3 人月,0.5h
+Web Console,**PDM**,"2,220",53,16.5%,5.8%,1.1 人月,0.3h
+Web Console,**Backend RD**,"1,960",96,14.6%,10.6%,1.0 人月,0.5h
+Web Console,**UX Designer**,"1,600",84,11.9%,9.3%,0.8 人月,0.4h
+Web Console,**PJM**,"1,310",32,9.7%,3.5%,0.7 人月,0.2h
+Web Console,**QA**,"1,100",12,8.2%,1.3%,0.6 人月,0.1h
+Web Console,**Data Engineer**,0,253,0.0%,27.9%,0.0 人月,1.3h
+Web Console,**Marketing**,0,120,0.0%,13.2%,0.0 人月,0.6h
+Web Console,**Operations**,0,30,0.0%,3.3%,0.0 人月,0.1h
+Web Console,**AI Engineer**,0,0,0.0%,0.0%,0.0 人月,0.0h
+Web Console,**App RD**,0,0,0.0%,0.0%,0.0 人月,0.0h
+User Management,**Backend RD**,240,9,40.0%,39.1%,0.1 人月,0.0h
+User Management,**PDM**,140,6,23.3%,26.1%,0.1 人月,0.0h
+User Management,**QA**,140,6,23.3%,26.1%,0.1 人月,0.0h
+User Management,**PJM**,80,2,13.3%,8.7%,0.0 人月,0.0h
+User Management,**AI Engineer**,0,0,0.0%,0.0%,0.0 人月,0.0h
+User Management,**App RD**,0,0,0.0%,0.0%,0.0 人月,0.0h
+User Management,**Data Engineer**,0,0,0.0%,0.0%,0.0 人月,0.0h
+User Management,**Marketing**,0,0,0.0%,0.0%,0.0 人月,0.0h
+User Management,**Operations**,0,0,0.0%,0.0%,0.0 人月,0.0h
+User Management,**UI Designer**,0,0,0.0%,0.0%,0.0 人月,0.0h
+User Management,**UX Designer**,0,0,0.0%,0.0%,0.0 人月,0.0h
+User Management,**Web RD**,0,0,0.0%,0.0%,0.0 人月,0.0h
+Macro Data,**AI Engineer**,"4,600",440,26.1%,21.0%,2.3 人月,2.2h
+Macro Data,**PDM**,"2,530",88,14.3%,4.2%,1.3 人月,0.4h
+Macro Data,**Web RD**,"2,390",120,13.5%,5.7%,1.2 人月,0.6h
+Macro Data,**Data Engineer**,"1,850",585,10.5%,28.0%,0.9 人月,2.9h
+Macro Data,**UI Designer**,"1,600",68,9.1%,3.3%,0.8 人月,0.3h
+Macro Data,**QA**,"1,600",40,9.1%,1.9%,0.8 人月,0.2h
+Macro Data,**PJM**,"1,510",52,8.6%,2.5%,0.8 人月,0.3h
+Macro Data,**Backend RD**,960,88,5.4%,4.2%,0.5 人月,0.4h
+Macro Data,**UX Designer**,600,46,3.4%,2.2%,0.3 人月,0.2h
+Macro Data,**Marketing**,0,315,0.0%,15.1%,0.0 人月,1.6h
+Macro Data,**Operations**,0,250,0.0%,12.0%,0.0 人月,1.2h
+Macro Data,**App RD**,0,0,0.0%,0.0%,0.0 人月,0.0h
+Accounting App,**App RD**,"6,005",90,27.3%,14.8%,3.0 人月,0.5h
+Accounting App,**UI Designer**,"4,192",90,19.1%,14.8%,2.1 人月,0.5h
+Accounting App,**UX Designer**,"3,548",61,16.2%,10.0%,1.8 人月,0.3h
+Accounting App,**PDM**,"3,410",55,15.5%,9.0%,1.7 人月,0.3h
+Accounting App,**PJM**,"2,070",34,9.4%,5.6%,1.0 人月,0.2h
+Accounting App,**QA**,"1,770",24,8.1%,3.9%,0.9 人月,0.1h
+Accounting App,**Backend RD**,970,39,4.4%,6.4%,0.5 人月,0.2h
+Accounting App,**Marketing**,0,124,0.0%,20.4%,0.0 人月,0.6h
+Accounting App,**Operations**,0,91,0.0%,15.0%,0.0 人月,0.5h
+Accounting App,**AI Engineer**,0,0,0.0%,0.0%,0.0 人月,0.0h
+Accounting App,**Data Engineer**,0,0,0.0%,0.0%,0.0 人月,0.0h
+Accounting App,**Web RD**,0,0,0.0%,0.0%,0.0 人月,0.0h
+AI Advisor,**QA**,"3,400",223,34.6%,27.6%,1.7 人月,1.1h
+AI Advisor,**PDM**,"1,560",24,15.9%,3.0%,0.8 人月,0.1h
+AI Advisor,**Web RD**,"1,550",56,15.8%,6.9%,0.8 人月,0.3h
+AI Advisor,**AI Engineer**,"1,100",55,11.2%,6.8%,0.6 人月,0.3h
+AI Advisor,**PJM**,930,14,9.5%,1.7%,0.5 人月,0.1h
+AI Advisor,**UI Designer**,486,21,4.9%,2.6%,0.2 人月,0.1h
+AI Advisor,**Backend RD**,480,24,4.9%,3.0%,0.2 人月,0.1h
+AI Advisor,**UX Designer**,324,12,3.3%,1.5%,0.2 人月,0.1h
+AI Advisor,**Data Engineer**,0,270,0.0%,33.5%,0.0 人月,1.4h
+AI Advisor,**Marketing**,0,108,0.0%,13.4%,0.0 人月,0.5h
+AI Advisor,**App RD**,0,0,0.0%,0.0%,0.0 人月,0.0h
+AI Advisor,**Operations**,0,0,0.0%,0.0%,0.0 人月,0.0h
+**總計**,,"**63,475**","**4,438**",,,**31.7 人月**,**22.2h**
