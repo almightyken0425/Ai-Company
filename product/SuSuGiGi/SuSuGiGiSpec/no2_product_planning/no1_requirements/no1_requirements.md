@@ -195,6 +195,28 @@
       - **風險:**
         - 無
 
+---
+
+## 本機資料庫
+
+- **問題根源：**
+    - 角度：工程
+    - App 需要高效率的本機結構化資料儲存，支援複雜查詢、離線優先架構，以及付費版的雲端同步
+    - 需在原生 SQLite、AsyncStorage、WatermelonDB 之間取捨
+- **評估方案:**
+    - WatermelonDB ★ 選用
+      - **描述:**
+        - 基於 SQLite 的 React Native 本機資料庫，提供響應式查詢與 Lazy Loading
+        - 官方支援 Sync Adapter 介面，可對接 Firestore 等後端做增量同步
+      - **效益:**
+        - Lazy Loading 確保大量資料下 UI 不阻塞
+        - Sync Adapter 與批次同步架構天然相容
+      - **風險:**
+        - 需學習 WatermelonDB 的 Schema 定義與 Model 層設計
+    - 原生 SQLite
+      - **排除理由:**
+        - 無 ORM、查詢需手寫 SQL，維護成本高；缺乏官方 Sync 支援
+
 ## 定期交易機制
 
 - **問題根源：**

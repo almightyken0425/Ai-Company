@@ -54,6 +54,8 @@
         
     - `deletedOn`: Number | Null, Unix Timestamp ms - Nullable, Index
         
+    - `disabledOn`: Number | Null, Unix Timestamp ms - Nullable, 使用者主動停用此帳戶的時間；Null 代表啟用中
+        
 
 ### 類別 Categories
 
@@ -76,6 +78,8 @@
     - `updatedOn`: Number, Unix Timestamp ms - Not Null, 資料最後更新時間, 同步依據
         
     - `deletedOn`: Number | Null, Unix Timestamp ms - Nullable, Index
+        
+    - `disabledOn`: Number | Null, Unix Timestamp ms - Nullable, 使用者主動停用此類別的時間；Null 代表啟用中
         
 
 ### 收支紀錄 Transactions

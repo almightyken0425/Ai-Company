@@ -8,39 +8,36 @@
 
 ## 核心方法
 
-### checkPremiumStatus
+### checkPremiumStatus 查詢 Premium 狀態
 
-- **簽章:**
-  - `checkPremiumStatus(context: PremiumContext): Boolean`
+- **輸入:**
+    - PremiumContext（詳見 `no1_data_models.md` — PremiumContext Local State）
 - **性質:**
-  - **純本地計算 Local Computation**
+    - 純本地計算，不發出網路請求
 - **邏輯:**
-    - 檢查 `context.expirationDate`。
-    - **IF** `expirationDate` is `Null`:
+    - 讀取 PremiumContext 的 `expirationDate`
+    - **IF** `expirationDate` 為 Null:
         - **Return:**
-          - `True` 代表 Lifetime Access
-    - **IF** `expirationDate` > `Date.now()`:
+            - `True`，代表 Lifetime Access
+    - **IF** `expirationDate` 大於當下時間:
         - **Return:**
-          - `True` 代表 Active Subscription
+            - `True`，代表 Active Subscription
     - **ELSE:**
         - **Return:**
-          - `False` 代表 Expired
+            - `False`，代表 Expired
 
-### refreshPremiumStatus
+---
 
-- **簽章:**
-  - `refreshPremiumStatus(): Promise<void>`
+### refreshPremiumStatus 更新 Premium 狀態
+
 - **性質:**
-  - **網路請求 Network Request**
-    - 非同步執行。
-    - 需處理網路錯誤。
+    - 網路請求，非同步執行，需處理網路錯誤
 - **邏輯:**
-    - 呼叫 `iapService.getAvailablePurchases` 取回購買清單。
-    - 取得最新有效訂閱或購買的產品 `Purchases` 陣列。
-    - 解析其中是否包含 `premium` 等級相關之 `productId`。
+    - 向 IAP 平台查詢當前帳號的有效購買紀錄，取回購買清單
+    - 解析購買清單，判斷是否包含 Premium 等級的項目
     - **更新本地 PremiumContext:**
-        - `rawPurchases` = 最新 IAP 回傳之原始資料。
-        - `lastChecked` = `Date.now()`。
-        - `expirationDate` = 解析出的到期日，若無則為 Null。
+        - `rawPurchases` = IAP 平台回傳的原始資料
+        - `lastChecked` = 當下時間戳
+        - `expirationDate` = 解析出的到期日；若無有效訂閱則為 Null
     - **觸發:**
-      - UI 重繪，若狀態改變。
+        - 若 Premium 狀態改變，通知 UI 重繪
