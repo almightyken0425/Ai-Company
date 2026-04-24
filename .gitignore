@@ -3,3 +3,6 @@ workspace/specs/HatsuonSpec/
 workspace/specs/SuSuGiGiSpec/
 workspace/specs/UndergroundRemakeSpec/
 .claude/settings.local.json
+
+# 每個 product 為獨立 git 生態系，由 decision_framework_router skill 的 products_registry.md 管理
+/product/
