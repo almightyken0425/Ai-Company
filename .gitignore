@@ -3,6 +3,14 @@ workspace/specs/HatsuonSpec/
 workspace/specs/SuSuGiGiSpec/
 workspace/specs/UndergroundRemakeSpec/
 .claude/settings.local.json
+.claude/scheduled_tasks.lock
+
+# Claude Code 工作期間產出的暫時 plan / 內部紀錄
+plans/
+
+# macOS junk
+.DS_Store
+**/.DS_Store
 
 # 每個 product 為獨立 git 生態系，由 decision_framework_router skill 的 products_registry.md 管理
 /product/
