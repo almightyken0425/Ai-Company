@@ -1,0 +1,35 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "susugigi-design",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8765", "--directory", "product/SuSuGiGi/no3_product_designs/no2_accounting_app/project"],
+      "port": 8765
+    },
+    {
+      "name": "susugigi-design-explore-acceditor",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8766", "--directory", "product/SuSuGiGi/no3_product_designs/no2_accounting_app-explore-acceditor/project"],
+      "port": 8766
+    },
+    {
+      "name": "susugigi-design-i18n-worktree",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8767", "--directory", "/Users/kenchio/Doc/ai-company-worktrees/i18n-expansion/design-accounting/project"],
+      "port": 8767
+    },
+    {
+      "name": "susugigi-design-v3-worktree",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8768", "--directory", "/Users/kenchio/Doc/_worktrees/susugigi-v3-design/project"],
+      "port": 8768
+    },
+    {
+      "name": "susugigi-design-editor-v2",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8769", "--directory", "/Users/kenchio/Doc/ai-company-worktrees/editor-v2/design-accounting/project"],
+      "port": 8769
+    }
+  ]
+}
