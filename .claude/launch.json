@@ -6,12 +6,6 @@
       "runtimeExecutable": "python3",
       "runtimeArgs": ["-m", "http.server", "8765", "--directory", "product/SuSuGiGi/no3_product_designs/no2_accounting_app/project"],
       "port": 8765
-    },
-    {
-      "name": "susugigi-design-explore-transfer-editor",
-      "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "8766", "--directory", "/Users/kenchio/Doc/ai-company-worktrees/explore-transfer-editor/design-accounting/project"],
-      "port": 8766
     }
   ]
 }

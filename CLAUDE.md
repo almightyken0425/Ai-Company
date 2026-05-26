@@ -193,3 +193,24 @@ iOS app build 時的 bundler URL 必須對應當前活著的 Metro 的 metroPort
 ### 與「驗證回報規範」的銜接
 
 「驗證位置」段提到 server URL 時，必須對齊 launch.json 的 entry port，不允許說「server 已起在 8000」這種無對應的 port。
+
+## 盤點任務協作節奏
+
+涵蓋 `/game-over`、`/game-start`、跨 git 盤點、多 worktree 清理等「掃整片」任務。
+
+**第一輪必須掃完整。** 不允許「先看 A 等等再看 B」分批。掃描範圍最少包含：
+
+- 所有頂層 git（`~/Doc/ai-company` 與底下產品 git）
+- 所有 worktree，**三個路徑都要含**：
+    - `~/Doc/.worktrees/`
+    - `~/Doc/_worktrees/`
+    - `~/Doc/ai-company-worktrees/`
+- 所有 module 子 git（design / spec / impl 三層）
+
+**對每一項給「現況 / 我的判斷 / 建議動作」3 件套**，缺一不可。表格形式比條列清楚時就用表格。
+
+**禁止用語：** 報告中不得出現「順便」「另外」「補一下」這類降級指代——每個議題都需明確決定，不分輕重。
+
+**請示節奏：** 全部訊號收齊、所有建議列完，才向使用者集中請示一次；不要邊掃邊問。掃描過程中若需要動到不可逆操作（worktree remove、branch delete、merge to main 等），歸入請示清單而非當下執行。
+
+對話回報訊息的通用規範（不限本節）見全域 `~/.claude/CLAUDE.md`「對話回報訊息規範」。
