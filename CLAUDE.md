@@ -139,9 +139,11 @@ git -C <主 git> branch -d feat/<topic>
 每個 worktree 一條 entry，欄位至少包含：
 
 - `name`：人類可讀標籤（如 `susugigi-design-editor-v2`）
-- `directory`：worktree 的絕對路徑
+- `directory`：worktree 相對於 ai-company 根目錄的路徑（例如 `../ai-company-worktrees/<topic>/<layer>-<module>`）
 - `port`：design canvas 用的 HTTP server port（base 8765，每新 worktree +1）
 - `metroPort`：Metro bundler port（base 8081，每新 worktree +1）；若該 worktree 不跑 RN app 可省略
+
+**路徑欄位禁止絕對路徑：** `directory` 與 `runtimeArgs` 內任何路徑（如 `--directory` 後的值）都必須是相對於 ai-company 根目錄的路徑，禁止絕對路徑（`/Users/.../...`）。理由：launch.json 是跨機共享的 port 規範表，絕對路徑只對單一機器有效——混入會讓另一台機看到「無法解析的路徑」，並可能誤判此檔「該追蹤還是該 ignore」（這正是 launch.json 跨機打架的根因）。
 
 ### 開新 worktree 時的硬規則
 
