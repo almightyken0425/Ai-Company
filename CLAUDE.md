@@ -165,28 +165,25 @@ python3 -m http.server <port from entry>
 
 不允許自選 port，必讀 launch.json 找該 worktree 的 entry。
 
-**重量 server（Metro bundler、iOS Simulator）：Claude 永遠不主動啟、不主動切。**
+**重量 server（Metro bundler、iOS Simulator）：Claude 平時不主動啟、不主動切；唯一例外是使用者打 `/sim-review` 觸發後，由該 skill 自動處理 kill Metro / 啟 Metro / `xcrun simctl terminate/launch` / 主 git `git checkout` / `npm run ios`。**
 
-理由：低 RAM 環境並行 Metro 會把系統壓死；simulator 一次只能跑一個 app。這兩個資源**完全由使用者手動管理**——使用者決定 simulator 現在要看哪個 worktree。
+理由：低 RAM 環境並行 Metro 會把系統壓死；simulator 一次只能跑一個 app。這兩個資源**平時由使用者手動管理**——使用者決定 simulator 現在要看哪個 worktree。`/sim-review` 是使用者明確授權的自動化路徑。
 
-launch.json 仍為每個 worktree 預先分配 metroPort，作用是**避免 hardcode 衝突**：無論 Metro 何時被啟動，它對應的 port 由 launch.json 決定，app build 時拿到的 bundler URL 就會對應到該 port。這讓使用者切 worktree 時 metroPort 是穩定的、不會隨機。
+launch.json 仍為每個 worktree 預先分配 metroPort 欄位，作用是**保留為佔位**，避免日後手動 hardcode 衝突。但 `/sim-review` 自動化流程**不讀此 metroPort，統一跑在 port 8081**（主 git base app 嵌入的 bundler URL）——所有 worktree review 都共用 8081 上的 Metro，切 worktree = 換 Metro 來源，不換 port。
 
-### Metro 切換流程：Claude 提醒、使用者裁示
+### Metro 切換：走 `/sim-review`
 
-當 Claude 完成改動、預期使用者可能想在 simulator 上看時，回報訊息必含「驗證位置」段帶 Metro 狀態（見全域 CLAUDE.md「驗證回報規範」內「回報訊息：simulator 切換用提醒 + 詢問」）。
+當 Claude 完成改動、預期使用者可能想在 simulator 上看時，回報訊息必含「驗證位置」段（見全域 CLAUDE.md「驗證回報規範」內「回報訊息：simulator 走 /sim-review」），主動引導使用者打 `/sim-review`。
 
-使用者打「切 Metro」/「切過去」之後，Claude 才執行：
+使用者打 `/sim-review` 之後，Claude 在該 skill 內自動處理 kill Metro、cd worktree、啟 Metro on port 8081、`xcrun simctl terminate/launch` 重啟 app 等動作。含原生改動分支則自動 cd 主 git、checkout feat、`npm run ios`、review 完還原 main。完整流程見 `~/.claude/skills/sim-review/SKILL.md`。
 
-1. `lsof -i :8081-:8090 | grep node` 找現有 Metro 的 port
-2. `kill <PID>` 停掉既有 Metro
-3. `cd <本 worktree>` 後 `npx react-native start --port <本 worktree 的 metroPort>`
-4. 提醒使用者：「在 simulator 上 dev menu → Configure Bundler 切到 port X，或 force quit app 重 build」
+`/sim-review` 觸發以外的場景，Claude 仍守「不主動啟、不主動切 Metro」（見「啟 server 時的硬規則」段）。
 
-使用者沒打就**不動**。即使本 session 是「改完 push 完待 merge」狀態，Metro 也不主動切。
+### Metro 與 app build 對應 port
 
-### Metro 與 app build 必須對應同一 port
+iOS app build 時嵌入的 bundler URL 是 `http://localhost:8081/`（RN 預設）。`/sim-review` 自動化下所有 Metro 都跑 8081，永遠對得上，不會出現「app hardcode 8081 但 Metro 跑在 8082」這種撞牆。
 
-iOS app build 時的 bundler URL 必須對應當前活著的 Metro 的 metroPort。不允許 app hardcode 8081 但 Metro 跑在 8082——這是並行 session 撞牆的核心場景。切換流程由使用者觸發（見上一條）。
+並行多個 review 時，simulator 只有一個，誰先打 `/sim-review` 誰佔用 Metro on 8081。下一個 worktree review 等前一個結束（「只動 JS」review 切換很快、不嚴重阻擋）。
 
 ### 收工時的硬規則
 
@@ -195,6 +192,34 @@ iOS app build 時的 bundler URL 必須對應當前活著的 Metro 的 metroPort
 ### 與「驗證回報規範」的銜接
 
 「驗證位置」段提到 server URL 時，必須對齊 launch.json 的 entry port，不允許說「server 已起在 8000」這種無對應的 port。
+
+## iOS 自驗策略
+
+RN app 在 simulator 上的驗證一律走 `/sim-review`，一鍵全自動。
+
+### 一次性 setup
+
+主 git（如 `product/SuSuGiGi/SuSuGiGiApp/`）的 main 版本跑過一次 `npm run ios`，build 出 base app on simulator。之後 base app 長期留著，所有「只動 JS」review 共用這份。
+
+### `/sim-review` 自動處理
+
+在 worktree 內打 `/sim-review`，Claude 會：
+
+1. 跑 `git diff main --name-only` 判別本次屬於「只動 JS」還是「動到原生」
+2. **只動 JS**：kill 現有 Metro、cd 本 worktree 啟新 Metro on port 8081、`xcrun simctl terminate/launch` 重啟模擬器 app → 約 30 秒，新內容上場
+3. **動到原生**：kill Metro、cd 主 git、checkout 該 feat branch、`npm run ios`（4~6 分鐘 build）→ review 完使用者打「review 結束」→ 自動 `git checkout main` 並再 build 一次 main 還原模擬器
+
+使用者唯一手動：在模擬器上看與驗證；含原生情況加打一句「review 結束」收尾。完整流程見 `~/.claude/skills/sim-review/SKILL.md`。
+
+### 絕對禁止：worktree 內 build
+
+不得在 worktree 內跑 `npm run ios`、`xcodebuild`、`pod install`。理由：每個 worktree 各自 build 會在 `~/Library/Developer/Xcode/DerivedData/` 累積獨立 cache，磁碟很快爆。所有 build / pod 動作都集中在主 git 跑，由 `/sim-review` 自動觸發。
+
+ai-company `.claude/settings.json` 的 PreToolUse hook 會機械攔截 worktree 內的此類指令（hook script 位於 `.claude/hooks/block-worktree-ios-build.sh`）。
+
+### 多 worktree 並行 review
+
+simulator 只有一個。誰先打 `/sim-review` 誰就佔用模擬器；下一個 worktree review 等前一個結束。「只動 JS」review 因為不換 app、只換 Metro，切換很快（30 秒），不嚴重阻擋；「動到原生」review 較重（4~6 分鐘 build + review + 還原 build），建議多個 native session 等手上的批次集滿再依序跑。
 
 ## 盤點任務協作節奏
 
