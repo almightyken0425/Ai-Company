@@ -9,7 +9,7 @@
 - 在 worktree 內啟 Metro / `react-native start` — 不行，Metro 只能跑在主 git path；symlinked `node_modules` 在 worktree 跑 Metro 必爆。詳見「Port 協作規範」
 - `git stash` 使用者既有的 uncommitted 改動 — 不行；改用 wip commit 或停下問
 - `cp -r .../node_modules` / `npm ci` / `npm install` 在 worktree — 不行，symlink 才合規。唯一例外是該主題本身要動 `package.json`。詳見「Worktree 使用慣例」
-- Edit `~/.claude/settings.json` / `~/.claude/hooks/*.sh` — 不行，self-modification 是 hard block，使用者授權也無法解
+- Edit `~/.claude/settings.json` / `~/.claude/hooks/*.sh` / `~/.claude/commands/*.md` — 預設不行（防 Claude 自主修改自己的設定 / hook / command）。**唯一例外：** 經正式 plan mode 流程（plan 檔存在於 `~/.claude/plans/`、ExitPlanMode 走過、使用者明示 ok），plan 內明列要動的檔案，才放行。零散的「ok」「順手改一下」「我覺得這樣比較好」不構成例外。commit message 含 `self-modification` 標籤利於 git history 追溯
 - Edit / Write 主 git 路徑下 `product/<產品>/no[346]_*` 任一檔 — 不行，必須先在 worktree 內。詳見「Worktree 使用慣例」
 - Edit / Write 任何產品的 impl UI 檔（`src/screens/**`、`src/components/**`、`src/constants/theme.ts`）— 必須先 Read 對應 design git 同 module 對應檔。hook 會擋未讀過 design 的修改。詳見「Design-Impl 對齊」
 - 跑 `/game-over` / `/game-clear` dry-run / 跨 git 盤點 / 多 worktree 清理 — 不行分批給結果。詳見「盤點任務協作節奏」
