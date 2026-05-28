@@ -1,5 +1,18 @@
 # AI Company — Claude Code 全局設定
 
+## 動作前 5 秒自檢
+
+執行下列動作前先停一拍，對照規則確認授權範圍。每條都對應一個我已重複踩過的雷。
+
+- `git push origin main` / 任何對 main 的 push — 需使用者明說 `merge` 或 `push main`；`ok`、`commit`、`完成了`、`/game-stop` 都不算授權
+- 在 worktree 內啟 Metro / `react-native start` — 不行，Metro 只能跑在主 git path；symlinked `node_modules` 在 worktree 跑 Metro 必爆。詳見「Port 協作規範」
+- `git stash` 使用者既有的 uncommitted 改動 — 不行；改用 wip commit 或停下問
+- `cp -r .../node_modules` / `npm ci` / `npm install` 在 worktree — 不行，symlink 才合規。唯一例外是該主題本身要動 `package.json`。詳見「Worktree 使用慣例」
+- Edit `~/.claude/settings.json` / `~/.claude/hooks/*.sh` — 不行，self-modification 是 hard block，使用者授權也無法解
+- Edit / Write 主 git 路徑下 `product/<產品>/no[346]_*` 任一檔 — 不行，必須先在 worktree 內。詳見「Worktree 使用慣例」
+
+完整規則散在「跨機 git 協作規範」（全域）、「修改流程規範」（全域）、「動工前置」「Worktree 使用慣例」「Port 協作規範」（本檔）各節。本段只是濃縮版自檢清單。
+
 ## 頂層目錄結構
 ```
 ai-company/
