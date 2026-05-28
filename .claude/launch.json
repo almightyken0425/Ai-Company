@@ -9,46 +9,5 @@
       "port": 8765,
       "metroPort": 8081
     },
-    {
-      "name": "toggle-switch-themed-design",
-      "directory": "../ai-company-worktrees/toggle-switch-themed/design-no2_accounting_app",
-      "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "8767", "--directory", "../ai-company-worktrees/toggle-switch-themed/design-no2_accounting_app/project"],
-      "port": 8767
-    },
-    {
-      "name": "toggle-switch-themed-impl",
-      "directory": "../ai-company-worktrees/toggle-switch-themed/impl-no2_accounting_app",
-      "metroPort": 8083
-    },
-    {
-      "name": "i18n-prancy-globe-impl",
-      "directory": "../ai-company-worktrees/i18n-prancy-globe/impl-no2_accounting_app",
-      "metroPort": 8084
-    },
-    {
-      "name": "recurring-end-date-inline-design",
-      "directory": "../ai-company-worktrees/recurring-end-date-inline/design-no2_accounting_app",
-      "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "8768", "--directory", "../ai-company-worktrees/recurring-end-date-inline/design-no2_accounting_app/project"],
-      "port": 8768
-    },
-    {
-      "name": "recurring-end-date-inline-impl",
-      "directory": "../ai-company-worktrees/recurring-end-date-inline/impl-no2_accounting_app",
-      "metroPort": 8085
-    },
-    {
-      "name": "dateselector-padding-fix-design",
-      "directory": "../ai-company-worktrees/dateselector-padding-fix/design-no2_accounting_app",
-      "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "8769", "--directory", "../ai-company-worktrees/dateselector-padding-fix/design-no2_accounting_app/project"],
-      "port": 8769
-    },
-    {
-      "name": "dateselector-padding-fix-impl",
-      "directory": "../ai-company-worktrees/dateselector-padding-fix/impl-no2_accounting_app",
-      "metroPort": 8086
-    }
   ]
 }
