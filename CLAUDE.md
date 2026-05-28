@@ -4,12 +4,15 @@
 
 執行下列動作前先停一拍，對照規則確認授權範圍。每條都對應一個我已重複踩過的雷。
 
-- `git push origin main` / 任何對 main 的 push — 需使用者明說 `merge` 或 `push main`；`ok`、`commit`、`完成了`、`/game-stop` 都不算授權
+- `git push origin main` / 任何對 main 的 push — 需使用者明說 `merge` 或 `push main`，或執行 `/game-stop`（此 command 本身就是配對 commit + push feat + merge to main + push main + cleanup 全程的授權）；單獨的 `ok`、`commit`、`完成了` 都不算授權
+- `git push origin --delete <branch>` / 刪 remote feat branch — 需使用者明說「刪 remote」，或執行 `/game-stop`（cleanup 包含刪 remote feat）、`/game-clear`（除非帶 `--keep-remote`）；其他形式都不算授權
 - 在 worktree 內啟 Metro / `react-native start` — 不行，Metro 只能跑在主 git path；symlinked `node_modules` 在 worktree 跑 Metro 必爆。詳見「Port 協作規範」
 - `git stash` 使用者既有的 uncommitted 改動 — 不行；改用 wip commit 或停下問
 - `cp -r .../node_modules` / `npm ci` / `npm install` 在 worktree — 不行，symlink 才合規。唯一例外是該主題本身要動 `package.json`。詳見「Worktree 使用慣例」
 - Edit `~/.claude/settings.json` / `~/.claude/hooks/*.sh` — 不行，self-modification 是 hard block，使用者授權也無法解
 - Edit / Write 主 git 路徑下 `product/<產品>/no[346]_*` 任一檔 — 不行，必須先在 worktree 內。詳見「Worktree 使用慣例」
+- Edit / Write 任何產品的 impl UI 檔（`src/screens/**`、`src/components/**`、`src/constants/theme.ts`）— 必須先 Read 對應 design git 同 module 對應檔。hook 會擋未讀過 design 的修改。詳見「Design-Impl 對齊」
+- 跑 `/game-over` / `/game-clear` dry-run / 跨 git 盤點 / 多 worktree 清理 — 不行分批給結果。詳見「盤點任務協作節奏」
 
 完整規則散在「跨機 git 協作規範」（全域）、「修改流程規範」（全域）、「動工前置」「Worktree 使用慣例」「Port 協作規範」（本檔）各節。本段只是濃縮版自檢清單。
 
@@ -140,6 +143,47 @@ git -C <主 git> branch -d feat/<topic>
 ### 唯一例外（極窄）
 
 純粹的歷史性檔案整理（rebase `.gitignore`、修補錯字到單一 commit），且整個 ai-company workspace 此刻無其他 session 在動同產品——可在主 git 直接動。除此之外無例外。
+
+## Design-Impl 對齊
+
+凡有 design git 的產品，impl 寫 UI 時 token、component、screen layout 必須對齊 design——impl 不擅自設定值，先去 design 查對應 token 與 component 結構，再對應到 impl。
+
+目前 design git 完整對應的只有 SuSuGiGi 的 `no2_accounting_app`；Hatsuon、UndergroundRemake、LiquidGlassHeaderTemplate 目前無對應 design git，自然不在此規範約束範圍。未來任何產品建立 design git 後，本規則與 hook 自動套用，不需另改規則或程式碼。
+
+### 範圍
+
+對下列 impl 檔案有效（任何產品的 impl 路徑都套）：
+
+- `src/screens/**/*.tsx`、`src/screens/**/*.ts`
+- `src/components/**/*.tsx`、`src/components/**/*.ts`
+- `src/constants/theme.ts`
+
+對應 design 路徑（同產品同 module）：
+
+- `no3_product_designs/<module>/project/10_foundations/`（atomic tokens、component tokens）
+- `no3_product_designs/<module>/project/20_components/`（元件定義）
+- `no3_product_designs/<module>/project/30_screens/`（畫面 layout）
+
+仲裁配對表權威定義在 `~/.claude/skills/decision_framework_router/products_registry.md`：design 仲裁、impl 跟進。
+
+### 動作層面
+
+動 impl UI 前必須先 Read 同 module 對應 design 範圍任一檔。判定機制由 hook 自動執行：
+
+- `~/.claude/hooks/design-impl-alignment-guard.sh` 在 PreToolUse 階段攔截 Edit / Write 對 impl UI 檔的修改
+- 同 session 內已 Read 過對應 design 範圍 → 放行
+- 沒讀過 → 擋下並明示要先讀哪幾個路徑
+- 對應 design 目錄不存在（如 Hatsuon、UndergroundRemake 目前情況）→ 自動放行、不擋
+
+### 例外（極窄）
+
+純邏輯修補不動視覺（如改一個 useEffect 邏輯、改 data fetching、修一個 onPress handler 邏輯）——這類改動沒「對齊 design」的概念。設環境變數繞過：
+
+```
+export CLAUDE_SKIP_DESIGN_GUARD=1
+```
+
+該 session 後續所有對 impl UI 的 Edit/Write 都會放行。例外的判斷由執行者擔責——濫用會回到「沒對齊 design」的爆氣循環。
 
 ## Port 協作規範
 
