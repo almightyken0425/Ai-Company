@@ -53,6 +53,7 @@ ai-company/
     - branch 名稱跨層必須**完全一致**，含前綴、連字號、大小寫
     - **強制用 worktree**（不在主 git 開 branch；詳見下一節「Worktree 使用慣例」）
     - 跨層同步建立——不允許「只開 impl 一層、之後再補」
+    - branch 名稱在 plan 階段已定（見全域 CLAUDE.md「Plan 產出規範」），此處沿用 plan 內寫的名稱、不重新命名
 
 4. **動工前最後檢查 cwd 在 worktree 內**
     - 跑 `pwd` 確認在 `~/Doc/ai-company-worktrees/<topic>/<layer>-<module>` 路徑下
