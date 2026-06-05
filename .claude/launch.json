@@ -5,9 +5,20 @@
       "name": "susugigi-design",
       "directory": "product/SuSuGiGi/no3_product_designs/no2_accounting_app",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "8765", "--directory", "product/SuSuGiGi/no3_product_designs/no2_accounting_app/project"],
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8765",
+        "--directory",
+        "product/SuSuGiGi/no3_product_designs/no2_accounting_app/project"
+      ],
       "port": 8765,
       "metroPort": 8081
+    },
+    {
+      "name": "unify-currency-id-resolution-impl",
+      "directory": "../ai-company-worktrees/unify-currency-id-resolution/impl-no2_accounting_app",
+      "metroPort": 8082
     }
   ]
 }
