@@ -29,12 +29,13 @@ ai-company/
 - 產品索引：`company/products.md`
 
 ## 產品路徑
-- Hatsuon App：`product/Hatsuon/HatsuonApp/`
-- Hatsuon Spec：`product/Hatsuon/HatsuonSpec/`
-- SuSuGiGi App：`product/SuSuGiGi/SuSuGiGiApp/`
-- SuSuGiGi Spec：`product/SuSuGiGi/SuSuGiGiSpec/`
-- LiquidGlassHeaderTemplate：`product/LiquidGlassHeaderTemplate/LiquidGlassHeaderTemplate/`
-- UndergroundRemake Spec：`product/UndergroundRemake/UndergroundRemakeSpec/`（程式碼尚未建立）
+
+各產品採決策框架 noN 分層。spec 在 `no4_product_specs/<module>/`、impl 在 `no6_product_development/<module>/`、design 在 `no3_product_designs/<module>/`。權威配對見 `~/.claude/skills/decision_framework_router/products_registry.md`。
+
+- SuSuGiGi：spec `product/SuSuGiGi/no4_product_specs/no2_accounting_app/`、impl `product/SuSuGiGi/no6_product_development/no2_accounting_app/`、design `product/SuSuGiGi/no3_product_designs/no2_accounting_app/`；另有 plan-only module `no4_product_specs/no1_user_management/`
+- Hatsuon：spec `product/Hatsuon/no4_product_specs/no1_pronunciation_app/`、impl `product/Hatsuon/no6_product_development/no1_pronunciation_app/`
+- LiquidGlassHeaderTemplate：spec `product/LiquidGlassHeaderTemplate/no4_product_specs/no1_liquid_glass_header/`（空殼）、impl `product/LiquidGlassHeaderTemplate/no6_product_development/no1_liquid_glass_header/`
+- UndergroundRemake：spec `product/UndergroundRemake/no4_product_specs/no1_concept/`（概念階段，無 impl）
 
 ## 財務路徑
 - 股權原則：`finance/no1_principles/`
@@ -257,7 +258,7 @@ RN app 在 simulator 上的驗證一律走 `/sim-review`，一鍵全自動。
 
 ### 一次性 setup
 
-主 git（如 `product/SuSuGiGi/SuSuGiGiApp/`）的 main 版本跑過一次 `npm run ios`，build 出 base app on simulator。之後 base app 長期留著，所有「只動 JS」review 共用這份。
+主 git（如 `product/SuSuGiGi/no6_product_development/no2_accounting_app/`）的 main 版本跑過一次 `npm run ios`，build 出 base app on simulator。之後 base app 長期留著，所有「只動 JS」review 共用這份。
 
 ### `/sim-review` 自動處理
 
