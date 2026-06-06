@@ -14,11 +14,6 @@
       ],
       "port": 8765,
       "metroPort": 8081
-    },
-    {
-      "name": "unify-currency-id-resolution-impl",
-      "directory": "../ai-company-worktrees/unify-currency-id-resolution/impl-no2_accounting_app",
-      "metroPort": 8082
     }
   ]
 }
