@@ -14,6 +14,22 @@
       ],
       "port": 8765,
       "metroPort": 8081
+    },
+    {
+      "name": "issue16-spec-no2-accounting",
+      "directory": "../ai-company-worktrees/issue16-recording-logic-backfill/spec-no2_accounting_app",
+      "port": 8770
+    },
+    {
+      "name": "issue16-impl-no2-accounting",
+      "directory": "../ai-company-worktrees/issue16-recording-logic-backfill/impl-no2_accounting_app",
+      "port": 8771,
+      "metroPort": 8083
+    },
+    {
+      "name": "issue16-product-susugigi",
+      "directory": "../ai-company-worktrees/issue16-recording-logic-backfill/product-susugigi",
+      "port": 8772
     }
   ]
 }
