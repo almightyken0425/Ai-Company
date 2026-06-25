@@ -32,7 +32,7 @@ ai-company/
 
 各產品採決策框架 noN 分層。spec 在 `no4_product_specs/<module>/`、impl 在 `no6_product_development/<module>/`、design 在 `no3_product_designs/<module>/`。權威配對見 `~/.claude/skills/decision_framework_router/products_registry.md`。
 
-- SuSuGiGi：spec `product/SuSuGiGi/no4_product_specs/no2_accounting_app/`、impl `product/SuSuGiGi/no6_product_development/no2_accounting_app/`、design `product/SuSuGiGi/no3_product_designs/no2_accounting_app/`；另有 plan-only module `no4_product_specs/no1_user_management/`
+- SuSuGiGi：spec `product/SuSuGiGi/no4_product_specs/no2_accounting_app/`、impl `product/SuSuGiGi/no6_product_development/no2_accounting_app/`、design `product/SuSuGiGi/no3_product_designs/no2_accounting_app/`；另有 plan-only module `no4_product_specs/no1_user_management/`；另有後端 module `no3_cloud_functions`（Firebase Cloud Functions，IAP 收據驗證與 entitlement），spec `product/SuSuGiGi/no4_product_specs/no3_cloud_functions/`、impl `product/SuSuGiGi/no6_product_development/no3_cloud_functions/`，無 design（後端無 UI）
 - Hatsuon：spec `product/Hatsuon/no4_product_specs/no1_pronunciation_app/`、impl `product/Hatsuon/no6_product_development/no1_pronunciation_app/`
 - LiquidGlassHeaderTemplate：spec `product/LiquidGlassHeaderTemplate/no4_product_specs/no1_liquid_glass_header/`（空殼）、impl `product/LiquidGlassHeaderTemplate/no6_product_development/no1_liquid_glass_header/`
 - UndergroundRemake：spec `product/UndergroundRemake/no4_product_specs/no1_concept/`（概念階段，無 impl）

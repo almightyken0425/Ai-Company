@@ -18,6 +18,7 @@
 - 規格：`product/SuSuGiGi/no4_product_specs/no2_accounting_app/`
 - 程式碼：`product/SuSuGiGi/no6_product_development/no2_accounting_app/`
 - 設計：`product/SuSuGiGi/no3_product_designs/no2_accounting_app/`
+- 後端 module `no3_cloud_functions`：規格 `product/SuSuGiGi/no4_product_specs/no3_cloud_functions/`、程式碼 `product/SuSuGiGi/no6_product_development/no3_cloud_functions/`
 
 ### LiquidGlassHeaderTemplate
 - 規格：`product/LiquidGlassHeaderTemplate/no4_product_specs/no1_liquid_glass_header/`（空殼）
