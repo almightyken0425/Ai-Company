@@ -30,6 +30,19 @@
       "name": "issue16-product-susugigi",
       "directory": "../ai-company-worktrees/issue16-recording-logic-backfill/product-susugigi",
       "port": 8772
+    },
+    {
+      "name": "launchscreen-design-no2-accounting",
+      "directory": "../ai-company-worktrees/launchscreen-exploration/design-no2_accounting_app",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8773",
+        "--directory",
+        "../ai-company-worktrees/launchscreen-exploration/design-no2_accounting_app/project"
+      ],
+      "port": 8773
     }
   ]
 }
