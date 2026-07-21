@@ -4,8 +4,8 @@ import os
 # ==========================================
 # Configuration: File Paths
 # ==========================================
-# Input File (Source of Truth — defined in no1_production_management/no4_project_management)
-INPUT_FILE = os.path.join('..', '..', 'no1_production_management', 'no4_project_management', 'no2_module_role_points.csv')
+# Input File (Source of Truth — defined in project/SuSuGiGi)
+INPUT_FILE = os.path.join('..', '..', '..', '..', 'project', 'SuSuGiGi', 'no2_module_role_points.csv')
 
 # Output Files
 OUTPUT_FILE_ROLE_SUMMARY = 'no4_3_equity_summary_by_role.csv'

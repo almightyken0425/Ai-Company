@@ -11,20 +11,20 @@
 各產品採 noN 分層結構。權威配對見 `~/.claude/skills/decision_framework_router/products_registry.md`。
 
 ### Hatsuon
-- 規格：`product/Hatsuon/no4_product_specs/no1_pronunciation_app/`
-- 程式碼：`product/Hatsuon/no6_product_development/no1_pronunciation_app/`
+- 規格：`product/Hatsuon/no3_product_specs/no1_pronunciation_app/`
+- 程式碼：`product/Hatsuon/no5_product_development/no1_pronunciation_app/`
 
 ### SuSuGiGi
-- 規格：`product/SuSuGiGi/no4_product_specs/no2_accounting_app/`
-- 程式碼：`product/SuSuGiGi/no6_product_development/no2_accounting_app/`
-- 設計：`product/SuSuGiGi/no3_product_designs/no2_accounting_app/`
-- 後端 module `no3_cloud_functions`：規格 `product/SuSuGiGi/no4_product_specs/no3_cloud_functions/`、程式碼 `product/SuSuGiGi/no6_product_development/no3_cloud_functions/`
-- 支援站 module `no4_support_site`：程式碼 `product/SuSuGiGi/no6_product_development/no4_support_site/`（$wish 公開支援頁、Firebase Hosting）
+- 規格：`product/SuSuGiGi/no3_product_specs/no2_accounting_app/`
+- 程式碼：`product/SuSuGiGi/no5_product_development/no2_accounting_app/`
+- 設計：`product/SuSuGiGi/no4_product_designs/no2_accounting_app/`
+- 後端 module `no3_cloud_functions`：規格 `product/SuSuGiGi/no3_product_specs/no3_cloud_functions/`、程式碼 `product/SuSuGiGi/no5_product_development/no3_cloud_functions/`
+- 支援站 module `no4_support_site`：程式碼 `product/SuSuGiGi/no5_product_development/no4_support_site/`（$wish 公開支援頁、Firebase Hosting）
 
 ### LiquidGlassHeaderTemplate
-- 規格：`product/LiquidGlassHeaderTemplate/no4_product_specs/no1_liquid_glass_header/`（空殼）
-- 程式碼：`product/LiquidGlassHeaderTemplate/no6_product_development/no1_liquid_glass_header/`
+- 規格：`product/LiquidGlassHeaderTemplate/no3_product_specs/no1_liquid_glass_header/`（空殼）
+- 程式碼：`product/LiquidGlassHeaderTemplate/no5_product_development/no1_liquid_glass_header/`
 
 ### UndergroundRemake
-- 規格：`product/UndergroundRemake/no4_product_specs/no1_concept/`
+- 規格：`product/UndergroundRemake/no3_product_specs/no1_concept/`
 - 程式碼：（概念階段，尚未建立）
