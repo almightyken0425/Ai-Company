@@ -19,7 +19,7 @@ if echo "$cmd" | grep -qE '(xcodebuild|pod install|react-native run-ios|npm run 
 依「iOS 自驗策略」（ai-company CLAUDE.md），rebuild 一律集中在主 git 跑，
 且應由 /sim-review 自動觸發。請：
   1. 打 /sim-review，Claude 會自動判別「只動 JS / 動到原生」並執行對應流程
-  2. 或 cd 到對應主 git（product/<產品>/no6_product_development/<module>/）後再執行
+  2. 或 cd 到對應主 git（product/<產品>/no5_product_development/<module>/）後再執行
 EOF
   exit 2
 fi
