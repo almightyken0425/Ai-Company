@@ -10,7 +10,7 @@
 - `git stash` 使用者既有的 uncommitted 改動 — 不行；改用 wip commit 或停下問
 - `cp -r .../node_modules` / `npm ci` / `npm install` 在 worktree — 不行，symlink 才合規。唯一例外是該主題本身要動 `package.json`。詳見「Worktree 使用慣例」
 - Edit `~/.claude/settings.json` / `~/.claude/hooks/*.sh` / `~/.claude/commands/*.md` — 預設不行（防 Claude 自主修改自己的設定 / hook / command）。**唯一例外：** 經正式 plan mode 流程（plan 檔存在於 `~/.claude/plans/`、ExitPlanMode 走過、使用者明示 ok），plan 內明列要動的檔案，才放行。零散的「ok」「順手改一下」「我覺得這樣比較好」不構成例外。commit message 含 `self-modification` 標籤利於 git history 追溯
-- Edit / Write 主 git 路徑下 `product/<產品>/no[34567]_*` 任一檔 — 不行，必須先在 worktree 內。這五層各為獨立 git（spec / design / impl / quality / release）；`no1`、`no2`、`no99` 屬頂層 Product git 自身目錄，hook 不機械攔截但仍守全員 worktree。詳見「Worktree 使用慣例」
+- Edit / Write 主 git 路徑下 `product/<產品>/no[34567]_*` 任一檔 — 不行，必須先在 worktree 內。這些層各為獨立 git（spec / design / impl / quality / release）；`no1`、`no2`、`no99` 屬頂層 Product git 自身目錄，hook 不機械攔截但仍守全員 worktree。詳見「Worktree 使用慣例」
 - Edit / Write 任何產品的 impl UI 檔（`src/screens/**`、`src/components/**`、`src/constants/theme.ts`）— 必須先 Read 對應 design git 同 module 對應檔。hook 會擋未讀過 design 的修改。詳見「Design-Impl 對齊」
 - 跑 `/game-over` / `/game-clear` dry-run / 跨 git 盤點 / 多 worktree 清理 — 不行分批給結果。詳見「盤點任務協作節奏」
 
@@ -31,7 +31,7 @@ ai-company/
 
 ## 產品路徑
 
-各產品採決策框架 noN 分層，五層皆依 module 拆分。spec 在 `no3_product_specs/<module>/`、impl 在 `no5_product_development/<module>/`、design 在 `no4_product_designs/<module>/`、quality 在 `no6_product_quality/<module>/`、release 在 `no7_product_release/<module>/`。權威配對見 `~/.claude/skills/decision_framework_router/products_registry.md`。
+各產品採決策框架 noN 分層，各層皆依 module 拆分。spec 在 `no3_product_specs/<module>/`、impl 在 `no5_product_development/<module>/`、design 在 `no4_product_designs/<module>/`、quality 在 `no6_product_quality/<module>/`、release 在 `no7_product_release/<module>/`。權威配對見 `~/.claude/skills/decision_framework_router/products_registry.md`。
 
 - SuSuGiGi：spec `product/SuSuGiGi/no3_product_specs/no2_accounting_app/`、impl `product/SuSuGiGi/no5_product_development/no2_accounting_app/`、design `product/SuSuGiGi/no4_product_designs/no2_accounting_app/`；另有 plan-only module `no3_product_specs/no1_user_management/`；另有後端 module `no3_cloud_functions`（Firebase Cloud Functions，IAP 收據驗證與 entitlement），spec `product/SuSuGiGi/no3_product_specs/no3_cloud_functions/`、impl `product/SuSuGiGi/no5_product_development/no3_cloud_functions/`，無 design（後端無 UI）；另有支援站 module `no4_support_site`（$wish 公開支援頁、Firebase Hosting），impl `product/SuSuGiGi/no5_product_development/no4_support_site/`，無 design 無 spec（內容即真相）；`no2_accounting_app` 另有品質層 quality `product/SuSuGiGi/no6_product_quality/no2_accounting_app/`（手動 QA 計劃與執行紀錄）與發布層 release `product/SuSuGiGi/no7_product_release/no2_accounting_app/`（App Store 送審材料），兩者 remote 皆為 private
 - Hatsuon：spec `product/Hatsuon/no3_product_specs/no1_pronunciation_app/`、impl `product/Hatsuon/no5_product_development/no1_pronunciation_app/`
