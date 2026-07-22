@@ -2,19 +2,19 @@
 
 ## 動作前 5 秒自檢
 
-執行下列動作前先停一拍，對照規則確認授權範圍。每條都對應一個我已重複踩過的雷。
+執行下列動作前先停一拍確認授權範圍。每條都對應重複踩過的雷。
 
-- `git push origin main` / 任何對 main 的 push — 需使用者明說 `merge` 或 `push main`，或執行 `/game-stop`（此 command 本身就是配對 commit + push feat + merge to main + push main + cleanup 全程的授權）；單獨的 `ok`、`commit`、`完成了` 都不算授權
-- `git push origin --delete <branch>` / 刪 remote feat branch — 需使用者明說「刪 remote」，或執行 `/game-stop`（cleanup 包含刪 remote feat）、`/game-clear`（除非帶 `--keep-remote`）；其他形式都不算授權
-- 在 worktree 內啟 Metro / `react-native start` — 不行，Metro 只能跑在主 git path；symlinked `node_modules` 在 worktree 跑 Metro 必爆。詳見「Port 協作規範」
-- `git stash` 使用者既有的 uncommitted 改動 — 不行；改用 wip commit 或停下問
-- `cp -r .../node_modules` / `npm ci` / `npm install` 在 worktree — 不行，symlink 才合規。唯一例外是該主題本身要動 `package.json`。詳見「Worktree 使用慣例」
-- Edit `~/.claude/settings.json` / `~/.claude/hooks/*.sh` / `~/.claude/commands/*.md` — 預設不行（防 Claude 自主修改自己的設定 / hook / command）。**唯一例外：** 經正式 plan mode 流程（plan 檔存在於 `~/.claude/plans/`、ExitPlanMode 走過、使用者明示 ok），plan 內明列要動的檔案，才放行。零散的「ok」「順手改一下」「我覺得這樣比較好」不構成例外。commit message 含 `self-modification` 標籤利於 git history 追溯
-- Edit / Write 主 git 路徑下 `product/<產品>/no[34567]_*` 任一檔 — 不行，必須先在 worktree 內。這些層各為獨立 git（spec / design / impl / quality / release）；`no1`、`no2`、`no99` 屬頂層 Product git 自身目錄，hook 不機械攔截但仍守全員 worktree。詳見「Worktree 使用慣例」
-- Edit / Write 任何產品的 impl UI 檔（`src/screens/**`、`src/components/**`、`src/constants/theme.ts`）— 必須先 Read 對應 design git 同 module 對應檔。hook 會擋未讀過 design 的修改。詳見「Design-Impl 對齊」
-- 跑 `/game-over` / `/game-clear` dry-run / 跨 git 盤點 / 多 worktree 清理 — 不行分批給結果。詳見「盤點任務協作節奏」
+- push main / merge to main — 需使用者明說 `merge` 或 `push main`，或走 `/game-stop`（該 command 即配對 commit + push + merge + cleanup 全程授權）；單獨的 `ok`、`commit`、`完成了` 都不算
+- 刪 remote feat branch — 需使用者明說「刪 remote」，或 `/game-stop`、`/game-clear`（帶 `--keep-remote` 除外）
+- worktree 內啟 Metro — 不行，symlinked node_modules 在 worktree 跑 Metro 必爆；Metro 只跑主 git path。見「Port 協作規範」
+- `git stash` 使用者既有的 uncommitted 改動 — 不行；改 wip commit 或停下問
+- worktree 內 `npm ci` / `npm install` / 複製 node_modules — 不行，symlink 才合規；唯一例外是主題本身動 `package.json`。見「Worktree 使用慣例」
+- Edit `~/.claude/settings.json` / `hooks/*.sh` / `commands/*.md` — 預設不行。唯一例外：正式 plan mode 流程（plan 檔在 `~/.claude/plans/`、ExitPlanMode 走過、使用者明示 ok）且 plan 明列該檔；commit 加 `self-modification` 標籤
+- 主 git 路徑下 Edit / Write `product/<產品>/no[34567]_*` 任一檔 — 不行，必須先在 worktree 內；`no1`、`no2`、`no99` 屬頂層 Product git，hook 不機械攔截但仍守全員 worktree。見「Worktree 使用慣例」
+- Edit impl UI 檔（`src/screens/**`、`src/components/**`、`src/constants/theme.ts`）— 必須先 Read 對應 design 檔，hook 會擋。見「Design-Impl 對齊」
+- `/game-over` / `/game-clear` dry-run / 跨 git 盤點 / 多 worktree 清理 — 不分批給結果。見「盤點任務協作節奏」
 
-完整規則散在「跨機 git 協作規範」（全域）、「修改流程規範」（全域）、「動工前置」「Worktree 使用慣例」「Port 協作規範」（本檔）各節。本段只是濃縮版自檢清單。
+完整規則見全域「跨機 git 協作規範」「修改流程規範」與本檔「多產品多層 git 協作規範」「動工前置」「Worktree 使用慣例」「Port 協作規範」。本段只是濃縮自檢。
 
 ## 頂層目錄結構
 ```
@@ -31,270 +31,120 @@ ai-company/
 
 ## 產品路徑
 
-各產品採決策框架 noN 分層，各層皆依 module 拆分。spec 在 `no3_product_specs/<module>/`、impl 在 `no5_product_development/<module>/`、design 在 `no4_product_designs/<module>/`、quality 在 `no6_product_quality/<module>/`、release 在 `no7_product_release/<module>/`。權威配對見 `~/.claude/skills/decision_framework_router/products_registry.md`。
+各產品採決策框架 noN 分層、依 module 拆分（spec `no3_product_specs/`、design `no4_product_designs/`、impl `no5_product_development/`、quality `no6_product_quality/`、release `no7_product_release/`，各層下接 `<module>/`）。層模型唯一真相是 `layer_manifest.yaml`；配對與屬性（remote、private、空殼、sub_mapping）權威在 `~/.claude/skills/decision_framework_router/products_registry.md`，本節只列路由入口。
 
-- SuSuGiGi：spec `product/SuSuGiGi/no3_product_specs/no2_accounting_app/`、impl `product/SuSuGiGi/no5_product_development/no2_accounting_app/`、design `product/SuSuGiGi/no4_product_designs/no2_accounting_app/`；另有 plan-only module `no3_product_specs/no1_user_management/`；另有後端 module `no3_cloud_functions`（Firebase Cloud Functions，IAP 收據驗證與 entitlement），spec `product/SuSuGiGi/no3_product_specs/no3_cloud_functions/`、impl `product/SuSuGiGi/no5_product_development/no3_cloud_functions/`，無 design（後端無 UI）；另有支援站 module `no4_support_site`（$wish 公開支援頁、Firebase Hosting），impl `product/SuSuGiGi/no5_product_development/no4_support_site/`，無 design 無 spec（內容即真相）；`no2_accounting_app` 另有品質層 quality `product/SuSuGiGi/no6_product_quality/no2_accounting_app/`（手動 QA 計劃與執行紀錄）與發布層 release `product/SuSuGiGi/no7_product_release/no2_accounting_app/`（App Store 送審材料），兩者 remote 皆為 private
-- Hatsuon：spec `product/Hatsuon/no3_product_specs/no1_pronunciation_app/`、impl `product/Hatsuon/no5_product_development/no1_pronunciation_app/`
-- LiquidGlassHeaderTemplate：spec `product/LiquidGlassHeaderTemplate/no3_product_specs/no1_liquid_glass_header/`（空殼）、impl `product/LiquidGlassHeaderTemplate/no5_product_development/no1_liquid_glass_header/`
-- UndergroundRemake：spec `product/UndergroundRemake/no3_product_specs/no1_concept/`（概念階段，無 impl）
+- SuSuGiGi：`product/SuSuGiGi/`——`no2_accounting_app`（spec + design + impl + quality + release 五層全）、`no1_user_management`（僅 spec，plan-only）、`no3_cloud_functions`（spec + impl，後端無 UI）、`no4_support_site`（僅 impl，內容即真相）
+- Hatsuon：`product/Hatsuon/`——`no1_pronunciation_app`（spec + impl）
+- LiquidGlassHeaderTemplate：`product/LiquidGlassHeaderTemplate/`——`no1_liquid_glass_header`（spec 空殼 + impl）
+- UndergroundRemake：`product/UndergroundRemake/`——`no1_concept`（僅 spec，概念階段）
 
 ## 財務路徑
 - 股權原則：`finance/no1_principles/`
 - 各產品貢獻帳本：`finance/no2_ledgers/<ProductName>/`
 - 公司股權操作管理：`finance/no3_operation/`
 
+## 多產品多層 git 協作規範
+
+骨架不變式（branch 同名、commit 同 subject+body、各層各自 `--no-ff` merge）與「Branch 涉及範圍」判準持在全域 CLAUDE.md 同名節；本節承載其餘細則。
+
+- **git 拆分結構：** 每產品拆為頂層 Product git 與依 module 拆分的各層 git。層的編號、目錄名、git 邊界只在 `layer_manifest.yaml` 宣告；實例配對在 `products_registry.md`；兩者與衍生物的一致性由 `~/.claude/hooks/tests/layer-manifest-test.sh` 檢核
+- **頂層 Product git 承載：** 提案層、需求層、整合層 Product Map、Roadmap；專案管理文件在 ai-company 根 git 的 `project/<產品名>/`；另追蹤 `no99_archive/` 歸檔層，收納工作追蹤筆記、規格衝突報告、已廢案 spec 等非決策框架核心層檔案
+- **新增產品 / 新增 module SOP：** 依 `products_registry.md` 末段變更 SOP 走檢核器迴圈——改宣告、跑 `layer-manifest-test.sh`、照 FAIL 清單補實體與文件、再檢核至全綠
+- **Spec 層職責邊界：** spec 文件的 MVC 分層政策與跨層禁止項由 spec_writer skill（含 `cross_layer_boundary_policy.md`）承載；各 spec module git 的 CLAUDE.md 為入口
+- **已知邊界：** 本機 hook 僅提示層，無法保證遠端 merge 真的配對發生；要硬保證走 CI 或遠端 pre-merge 檢查
+
 ## 動工前置
 
-凡牽涉 SuSuGiGi、Hatsuon、LiquidGlassHeaderTemplate、UndergroundRemake 或未來註冊產品的 spec / design / impl / quality / release 路徑改動，在第一個 Edit / Write 之前必須完成下列四步，全做完才能動工：
+凡動註冊產品的 spec / design / impl / quality / release 路徑，第一個 Edit / Write 之前四步全做完：
 
-1. **跑 decision_framework_router skill 答上游四問**（屬哪個產品 / 哪一層 / 哪個 module / 需求根因與 Product Map 對應項存在嗎）
+1. **跑 decision_framework_router 答上游四問**（屬哪個產品 / 哪一層 / 哪個 module / 需求根因與 Product Map 對應項存在嗎）
+2. **依四問結果確認要動的層**——單層或跨多層都明確列出
+3. **每個要動的層 git 各自 `git worktree add` 建同名 feat branch**——名稱沿用 plan 內已定的（全域「Plan 產出規範」）；跨層完全一致、同步建立，不允許「只開 impl、之後再補」
+4. **動工前最後檢查 cwd**——`pwd` 在 `~/Doc/ai-company-worktrees/<topic>/<layer>-<module>` 下、`git branch --show-current` 是 `feat/<topic>` 不是 main
 
-2. **依四問結果確認要動的層**（design / spec / impl / quality / release 一層或多層；單層或跨多層都明確列出）
-
-3. **在每個要動的層 git 各自用 `git worktree add` 建立同名 feat branch**
-    - branch 名稱跨層必須**完全一致**，含前綴、連字號、大小寫
-    - **強制用 worktree**（不在主 git 開 branch；詳見下一節「Worktree 使用慣例」）
-    - 跨層同步建立——不允許「只開 impl 一層、之後再補」
-    - branch 名稱在 plan 階段已定（見全域 CLAUDE.md「Plan 產出規範」），此處沿用 plan 內寫的名稱、不重新命名
-
-4. **動工前最後檢查 cwd 在 worktree 內**
-    - 跑 `pwd` 確認在 `~/Doc/ai-company-worktrees/<topic>/<layer>-<module>` 路徑下
-    - 跑 `git branch --show-current` 確認是 `feat/<topic>`，不是 main
-
-「我已經知道要改哪個檔案」「只是小改」「先動再說」都不是跳過任何一步的理由。跳過任何一步事後一定要回頭補（`git reset --hard` → 重開），不如一開始做對。
-
-框架的價值是確認你想動的那一層不是錯的層；branch 同步建立的價值是後續 commit 配對與 merge 才有可能對齊。
+「已知道要改哪個檔」「只是小改」「先動再說」都不是跳步理由；跳過事後必須 `git reset --hard` 重開，不如一開始做對。框架的價值是確認層沒選錯；同名同步建立的價值是 commit 配對與 merge 才能對齊。
 
 ## Worktree 使用慣例
 
-主 git 永遠停在乾淨 main 上。任何主題改動一律用 `git worktree add` 隔離，不在主 git 上開 feat branch。這條規則無例外——包括 hot-fix、一次性小改、單一 git 單一主題情境。
+主 git 永遠停在乾淨 main。任何主題改動一律 `git worktree add` 隔離，不在主 git 開 feat branch，無例外（含 hot-fix、一次性小改、無並行時）。理由：並行 session 動同產品時，任一 session 在主 git 開 branch，另一 session 的 merge 就撞牆；worktree 是秒級操作、代價極低。
 
-### 為什麼全員 worktree
+### 目錄與命名
 
-兩個並行 session 動同一個產品時，若任一 session 直接在主 git 開 branch，另一個 session 想 merge 時主 git 不在 main，會撞牆要等對方收尾。「全員 worktree」消除這個風險，並且代價極低（`git worktree add` 是秒級操作）。
-
-「我只改一行」「我等等就 merge」「現在沒並行」都不是跳過 worktree 的理由。未來自己也可能開第二個 session，現在預先用 worktree 就讓未來自己不必煩惱。
-
-### 目錄與命名慣例
-
-- worktree 集中放到 `~/Doc/ai-company-worktrees/<topic>/` 底下，末層目錄名依 git 種類分兩形：
-    - 依 module 拆分的 git（design / spec / impl / quality / release）用 `<layer>-<module>`，例如 `spec-no2_accounting_app`、`quality-no2_accounting_app`
-    - 頂層 Product git 無 module，用 `product-<產品名小寫>`，例如 `product-susugigi`
+- worktree 集中在 `~/Doc/ai-company-worktrees/<topic>/`，末層目錄名兩形：module 層 git 用 `<layer>-<module>`（如 `spec-no2_accounting_app`）；頂層 Product git 用 `product-<產品名小寫>`（如 `product-susugigi`）
 - 末層目錄名是 hook 反查產品與層級的唯一錨點，改名須同步 `multi-tier-sync-guard.sh` 與 `branch-pairing-guard.sh` 的反查正則
-- 同主題跨多層 git 用**完全相同的 branch 名稱**（含前綴、連字號、大小寫）
-- Preview server / `launch.json` 為新 worktree 路徑新增條目，否則 verify 看到的是原 git 內容而非 worktree 改動
+- 同主題跨多層 git 用完全相同的 branch 名稱
+- 開新 worktree 後、啟 server 前，為它 append launch.json entry（見「Port 協作規範」），否則 verify 看到的是原 git 內容
 
-### node_modules 一律 symlink，禁止各自 npm ci
+### node_modules 一律 symlink
 
-worktree 開好之後，需要 node_modules 才能跑（例如 RN impl 層）的話，**強制** symlink 主 git 那份：
-
-```
-cd <worktree>
-ln -s <主 git 的 node_modules 絕對路徑> ./node_modules
-```
-
-不允許跑 `npm ci` / `npm install` 讓 worktree 自己有一份。理由：
-
-- 單一 impl 的 node_modules 約 1.9 GB；三個並行主題 worktree 各一份 = 5.7 GB
-- 對硬碟接近上限的環境會直接爆
-- worktree 與主 git 共享 .git，本來就是「共用為主」精神
-
-**唯一例外：** 該主題本身就要動 `package.json` / `package-lock.json`、需要 commit 依賴變動。這種情況：(a) 動工前先說明、(b) 用獨立 npm ci、(c) 主題收工立刻 recreate symlink 並 `rm -rf` 那份 worktree 自己的 node_modules。
+需要 node_modules 的 worktree 強制 symlink 主 git 那份（`ln -s <主 git node_modules 絕對路徑> ./node_modules`），禁止各自 `npm ci` / `npm install`——單份約 1.9 GB，多 worktree 各一份會爆硬碟；worktree 與主 git 本來就是共用精神。**唯一例外：** 主題本身要動 `package.json` / lock 檔——動工前先說明、獨立 npm ci、收工立刻刪那份 node_modules 並 recreate symlink。
 
 ### 動作層面流程
 
-**開工：** 對每個要動的層 git，跑
+**開工**——對每個要動的層 git，各層同步建立、branch 名相同：
 
 ```
 git -C <該層主 git> worktree add ~/Doc/ai-company-worktrees/<topic>/<layer>-<module> -b feat/<topic> main
 ```
 
-各層同步建立、branch 名稱完全相同。
+**改檔 + 靜態檢查**（lint / tsc / spec-term-audit）全在 worktree 內。
 
-**改檔 + 跑靜態檢查：** 全在 worktree 內進行（lint / tsc / spec-term-audit）。
+**commit + push：** `cd <worktree>` → `git add` + `git commit` + `git push -u origin feat/<topic>`；各層各自 commit，subject + body 完全相同（見「多產品多層 git 協作規範」）。
 
-**commit + push：**
+**merge to main**——各層各自配對執行，主 git 全程停在 main、無 checkout：
 
-- `cd <worktree>` 然後 `git add` + `git commit` + `git push -u origin feat/<topic>`
-- 各層各自 commit，subject + body 完全相同（全域 CLAUDE.md「多產品多層 git 協作規範」）
+1. 確認 worktree 已 push feat——這一步是「remote 是唯一真相」的安全點
+2. `git -C <該層主 git> merge --no-ff feat/<topic>`（worktree 與主 git 共享 `.git/refs`，local feat 與 origin/feat 同 hash，免 fetch）
+3. `git -C <該層主 git> push`
 
-**merge to main：** worktree 已 push feat 之後，直接用主 git 的 local feat branch ref 來 merge（worktree 與主 git 共享 `.git/refs`，主 git 看得到 worktree commit 出來的 feat branch）：
-
-1. 確認 worktree 已 push feat（保留「remote 是唯一真相」的安全點）
-2. 主 git 直接用 local feat branch ref 來 merge：
-
-```
-git -C <該層主 git> merge --no-ff feat/<topic>
-```
-
-3. push main：
-
-```
-git -C <該層主 git> push
-```
-
-各層各自跑、配對執行。主 git 全程停在 main、無 checkout 動作。
-
-**為什麼用 local feat 而不是 origin/feat：** worktree push 完之後，本機的 `.git/refs/heads/feat/<topic>` 與 `.git/refs/remotes/origin/feat/<topic>` 指向同一個 commit hash（兩個 ref 在同一個 .git 裡）。主 git merge local feat 與 merge origin/feat 結果完全相同，但跳過了多餘的 `git fetch`。
-
-**「remote 是唯一真相」如何維持：** 安全點在「worktree push feat」那一步——這保證了 feat 的 commit 確實在 remote 上有備份。主 git merge 之後 push main 也會把 feat 的 commit 帶上去（git 推 main 時會把所有 reachable commit 推齊）。跨機協作時另一台 Mac 看得到 feat 的 commit history。
-
-**收尾：**
-
-```
-git -C <主 git> worktree remove ~/Doc/ai-company-worktrees/<topic>/<layer>-<module>
-git -C <主 git> branch -d feat/<topic>
-```
+**收尾：** `git -C <主 git> worktree remove <worktree 路徑>` + `git -C <主 git> branch -d feat/<topic>`。
 
 ### 唯一例外（極窄）
 
-純粹的歷史性檔案整理（rebase `.gitignore`、修補錯字到單一 commit），且整個 ai-company workspace 此刻無其他 session 在動同產品——可在主 git 直接動。除此之外無例外。
+純歷史性檔案整理（修 `.gitignore`、錯字單 commit），且此刻無其他 session 動同產品——可在主 git 直接動。除此無例外。
 
 ## Design-Impl 對齊
 
-凡有 design git 的產品，impl 寫 UI 時 token、component、screen layout 必須對齊 design——impl 不擅自設定值，先去 design 查對應 token 與 component 結構，再對應到 impl。
+凡有 design git 的產品，impl 寫 UI 時 token、component、screen layout 必須對齊 design——不擅自設值，先查 design 對應 token 與 component 結構再對應到 impl。目前只有 SuSuGiGi `no2_accounting_app` 有 design git；未來任何產品建 design git 後，本規則與 hook 自動套用。
 
-目前 design git 完整對應的只有 SuSuGiGi 的 `no2_accounting_app`；Hatsuon、UndergroundRemake、LiquidGlassHeaderTemplate 目前無對應 design git，自然不在此規範約束範圍。未來任何產品建立 design git 後，本規則與 hook 自動套用，不需另改規則或程式碼。
-
-### 範圍
-
-對下列 impl 檔案有效（任何產品的 impl 路徑都套）：
-
-- `src/screens/**/*.tsx`、`src/screens/**/*.ts`
-- `src/components/**/*.tsx`、`src/components/**/*.ts`
-- `src/constants/theme.ts`
-
-對應 design 路徑（同產品同 module）：
-
-- `no4_product_designs/<module>/project/10_foundations/`（atomic tokens、component tokens）
-- `no4_product_designs/<module>/project/20_components/`（元件定義）
-- `no4_product_designs/<module>/project/30_screens/`（畫面 layout）
-
-仲裁配對表權威定義在 `~/.claude/skills/decision_framework_router/products_registry.md`：design 仲裁、impl 跟進。
-
-### 動作層面
-
-動 impl UI 前必須先 Read 同 module 對應 design 範圍任一檔。判定機制由 hook 自動執行：
-
-- `~/.claude/hooks/design-impl-alignment-guard.sh` 在 PreToolUse 階段攔截 Edit / Write 對 impl UI 檔的修改
-- 同 session 內已 Read 過對應 design 範圍 → 放行
-- 沒讀過 → 擋下並明示要先讀哪幾個路徑
-- 對應 design 目錄不存在（如 Hatsuon、UndergroundRemake 目前情況）→ 自動放行、不擋
-
-### 例外（極窄）
-
-純邏輯修補不動視覺（如改一個 useEffect 邏輯、改 data fetching、修一個 onPress handler 邏輯）——這類改動沒「對齊 design」的概念。設環境變數繞過：
-
-```
-export CLAUDE_SKIP_DESIGN_GUARD=1
-```
-
-該 session 後續所有對 impl UI 的 Edit/Write 都會放行。例外的判斷由執行者擔責——濫用會回到「沒對齊 design」的爆氣循環。
+- **範圍：** impl 的 `src/screens/**`、`src/components/**`、`src/constants/theme.ts`（任何產品都套）；對應同 module design 的 `project/10_foundations/`（tokens）、`20_components/`（元件）、`30_screens/`（layout）。仲裁配對權威在 `products_registry.md`：design 仲裁、impl 跟進
+- **動作層面：** 動 impl UI 前必須先 Read 同 module 對應 design 範圍任一檔。`~/.claude/hooks/design-impl-alignment-guard.sh` 在 PreToolUse 攔截：同 session 已讀過放行；沒讀過擋下並明示要讀哪些路徑；design 目錄不存在自動放行
+- **例外（極窄）：** 純邏輯修補不動視覺（useEffect、data fetching、handler 邏輯），設 `export CLAUDE_SKIP_DESIGN_GUARD=1` 繞過，該 session 後續全放行；判斷由執行者擔責、濫用會回到沒對齊的爆氣循環
 
 ## Port 協作規範
 
-多個 worktree 同時跑 HTTP server / Metro bundler 會撞 port。設定的解法是集中的 port 註冊表，所有 server 啟動前必查表、不自選 port。
+多 worktree 並行跑 server 會撞 port。解法：集中註冊表 `~/Doc/ai-company/.claude/launch.json`，所有 server 啟動前必查表、不自選 port。
 
-### 註冊表位置
+### 註冊表與硬規則
 
-`~/Doc/ai-company/.claude/launch.json`
+每個 worktree 一條 entry，欄位：`name`（人類可讀標籤）、`directory`（相對 ai-company 根目錄；`directory` 與 `runtimeArgs` 內任何路徑都**禁止絕對路徑**——launch.json 跨機共享，絕對路徑只對單機有效，混入會讓另一台機看到無法解析的路徑）、`port`（design canvas 用，base 8765 遞增）、`metroPort`（base 8081 遞增；純佔位防手動 hardcode 衝突，`/sim-review` 不讀它、統一跑 8081——app 嵌入的 bundler URL 即 8081，切 worktree = 換 Metro 來源、不換 port）。
 
-每個 worktree 一條 entry，欄位至少包含：
+- `git worktree add` 完成後、啟任何 server 前，**必須** append entry；未加不許啟 server。分配 port = 現有最大 +1
+- `git worktree remove` 後**同步移除** entry；`/game-stop` 自動處理，手動 remove 自己記得
+- 回報訊息「驗證位置」的 server URL 必須對齊 entry port（銜接全域「驗證回報規範」），不允許報無對應的 port
 
-- `name`：人類可讀標籤（如 `susugigi-design-editor-v2`）
-- `directory`：worktree 相對於 ai-company 根目錄的路徑（例如 `../ai-company-worktrees/<topic>/<layer>-<module>`）
-- `port`：design canvas 用的 HTTP server port（base 8765，每新 worktree +1）
-- `metroPort`：Metro bundler port（base 8081，每新 worktree +1）；若該 worktree 不跑 RN app 可省略
+### 輕量 server（design canvas）
 
-**路徑欄位禁止絕對路徑：** `directory` 與 `runtimeArgs` 內任何路徑（如 `--directory` 後的值）都必須是相對於 ai-company 根目錄的路徑，禁止絕對路徑（`/Users/.../...`）。理由：launch.json 是跨機共享的 port 規範表，絕對路徑只對單一機器有效——混入會讓另一台機看到「無法解析的路徑」，並可能誤判此檔「該追蹤還是該 ignore」（這正是 launch.json 跨機打架的根因）。
+每 instance 約 10 MB，可多 instance 並行；每個 worktree 用自己 entry 的 port 跑 `python3 -m http.server <port>`。
 
-### 開新 worktree 時的硬規則
+### 重量資源（Metro / iOS Simulator）：一律走 /sim-review
 
-`git worktree add` 動作完成後、啟任何 server 之前，**必須** append 一條 entry 到 launch.json。分配 port 規則：
+原獨立節「iOS 自驗策略」已併入本節，hook 訊息引該名時指的就是這裡。
 
-- design port = 現有最大 port + 1（從 8765 起算）
-- metroPort = 現有最大 metroPort + 1（從 8081 起算）
-
-未加 entry → 不允許啟 server。
-
-### 啟 server 時的硬規則：輕量 vs 重量分流
-
-**輕量 server（design canvas，每 instance ~10 MB RAM）：** 可多 instance 並行。每個 worktree 跑各自的 python http.server：
-
-```
-cd <worktree>
-python3 -m http.server <port from entry>
-```
-
-不允許自選 port，必讀 launch.json 找該 worktree 的 entry。
-
-**重量 server（Metro bundler、iOS Simulator）：Claude 平時不主動啟、不主動切；唯一例外是使用者打 `/sim-review` 觸發後，由該 skill 自動處理 kill Metro / 啟 Metro / `xcrun simctl terminate/launch` / 主 git `git checkout` / `npm run ios`。**
-
-理由：低 RAM 環境並行 Metro 會把系統壓死；simulator 一次只能跑一個 app。這兩個資源**平時由使用者手動管理**——使用者決定 simulator 現在要看哪個 worktree。`/sim-review` 是使用者明確授權的自動化路徑。
-
-launch.json 仍為每個 worktree 預先分配 metroPort 欄位，作用是**保留為佔位**，避免日後手動 hardcode 衝突。但 `/sim-review` 自動化流程**不讀此 metroPort，統一跑在 port 8081**（主 git base app 嵌入的 bundler URL）——所有 worktree review 都共用 8081 上的 Metro，切 worktree = 換 Metro 來源，不換 port。
-
-### Metro 切換：走 `/sim-review`
-
-當 Claude 完成改動、預期使用者可能想在 simulator 上看時，回報訊息必含「驗證位置」段（見全域 CLAUDE.md「驗證回報規範」內「回報訊息：simulator 走 /sim-review」），主動引導使用者打 `/sim-review`。
-
-使用者打 `/sim-review` 之後，Claude 在該 skill 內自動處理 kill Metro、cd worktree、啟 Metro on port 8081、`xcrun simctl terminate/launch` 重啟 app 等動作。含原生改動分支則自動 cd 主 git、checkout feat、`npm run ios`、review 完還原 main。完整流程見 `~/.claude/skills/sim-review/SKILL.md`。
-
-`/sim-review` 觸發以外的場景，Claude 仍守「不主動啟、不主動切 Metro」（見「啟 server 時的硬規則」段）。
-
-### Metro 與 app build 對應 port
-
-iOS app build 時嵌入的 bundler URL 是 `http://localhost:8081/`（RN 預設）。`/sim-review` 自動化下所有 Metro 都跑 8081，永遠對得上，不會出現「app hardcode 8081 但 Metro 跑在 8082」這種撞牆。
-
-並行多個 review 時，simulator 只有一個，誰先打 `/sim-review` 誰佔用 Metro on 8081。下一個 worktree review 等前一個結束（「只動 JS」review 切換很快、不嚴重阻擋）。
-
-### 收工時的硬規則
-
-`git worktree remove` 之後必須**同步移除** launch.json 對應 entry，避免註冊表累積殘留。`/game-stop` 收尾指令會自動處理；手動 remove 時自己記得。
-
-### 與「驗證回報規範」的銜接
-
-「驗證位置」段提到 server URL 時，必須對齊 launch.json 的 entry port，不允許說「server 已起在 8000」這種無對應的 port。
-
-## iOS 自驗策略
-
-RN app 在 simulator 上的驗證一律走 `/sim-review`，一鍵全自動。
-
-### 一次性 setup
-
-主 git（如 `product/SuSuGiGi/no5_product_development/no2_accounting_app/`）的 main 版本跑過一次 `npm run ios`，build 出 base app on simulator。之後 base app 長期留著，所有「只動 JS」review 共用這份。
-
-### `/sim-review` 自動處理
-
-在 worktree 內打 `/sim-review`，Claude 會：
-
-1. 跑 `git diff main --name-only` 判別本次屬於「只動 JS」還是「動到原生」
-2. **只動 JS**：kill 現有 Metro、cd 本 worktree 啟新 Metro on port 8081、`xcrun simctl terminate/launch` 重啟模擬器 app → 約 30 秒，新內容上場
-3. **動到原生**：kill Metro、cd 主 git、checkout 該 feat branch、`npm run ios`（4~6 分鐘 build）→ review 完使用者打「review 結束」→ 自動 `git checkout main` 並再 build 一次 main 還原模擬器
-
-使用者唯一手動：在模擬器上看與驗證；含原生情況加打一句「review 結束」收尾。完整流程見 `~/.claude/skills/sim-review/SKILL.md`。
-
-### 絕對禁止：worktree 內 build
-
-不得在 worktree 內跑 `npm run ios`、`xcodebuild`、`pod install`。理由：每個 worktree 各自 build 會在 `~/Library/Developer/Xcode/DerivedData/` 累積獨立 cache，磁碟很快爆。所有 build / pod 動作都集中在主 git 跑，由 `/sim-review` 自動觸發。
-
-ai-company `.claude/settings.json` 的 PreToolUse hook 會機械攔截 worktree 內的此類指令（hook script 位於 `.claude/hooks/block-worktree-ios-build.sh`）。
-
-### 多 worktree 並行 review
-
-simulator 只有一個。誰先打 `/sim-review` 誰就佔用模擬器；下一個 worktree review 等前一個結束。「只動 JS」review 因為不換 app、只換 Metro，切換很快（30 秒），不嚴重阻擋；「動到原生」review 較重（4~6 分鐘 build + review + 還原 build），建議多個 native session 等手上的批次集滿再依序跑。
+- simulator 驗證一律 `/sim-review` 一鍵全自動：判別只動 JS 或動到原生、切 Metro、build、還原，流程細節與排隊規則見 `~/.claude/skills/sim-review/SKILL.md`
+- `/sim-review` 觸發以外，Claude 不主動啟、不主動切 Metro、不動 simulator——低 RAM 環境並行 Metro 會壓死系統；這兩個資源平時由使用者手動管理
+- **禁止 worktree 內 build**（`npm run ios`、`xcodebuild`、`pod install`）——各自 build 會在 DerivedData 累積 cache 爆磁碟；build 集中主 git、由 `/sim-review` 觸發。`.claude/hooks/block-worktree-ios-build.sh` PreToolUse 機械攔截
+- 完成改動、預期使用者想上 simulator 看時，回報「驗證位置」段引導打 `/sim-review`（見全域「驗證回報規範」內「回報訊息：simulator 走 /sim-review」）
 
 ## 盤點任務協作節奏
 
-涵蓋 `/game-over`、`/game-start`、跨 git 盤點、多 worktree 清理等「掃整片」任務。
+涵蓋 `/game-over`、`/game-start`、跨 git 盤點、多 worktree 清理等掃整片任務。
 
-**第一輪必須掃完整。** 不允許「先看 A 等等再看 B」分批。掃描範圍最少包含：
+**第一輪必須掃完整，不分批。** 範圍最少含：
 
-- 所有頂層 git（`~/Doc/ai-company` 與底下產品 git）
-- 所有 worktree。活躍根唯一：`~/Doc/ai-company-worktrees/`（兩層 `<topic>/<末層名>` 慣例，末層名依「Worktree 使用慣例」兩形：`<layer>-<module>` 或 `product-<產品名小寫>`；空殼 rmdir 只認此根）。dirty 偵測靠 `git worktree list` 自報、與根路徑無關，已天然覆蓋所有根
-    - 遺留/防禦根 `~/Doc/.worktrees/`、`~/Doc/_worktrees/`：目前無命令會在此產出，存在才順手掃 dirty、不存在略過
-- 所有 module 子 git（design / spec / impl / quality / release 五層）
+- 所有頂層 git（`~/Doc/ai-company` 與底下產品 git）與所有 module 子 git（五層）
+- 所有 worktree。活躍根唯一：`~/Doc/ai-company-worktrees/`（兩層 `<topic>/<末層名>` 慣例，末層名依「Worktree 使用慣例」兩形；空殼 rmdir 只認此根）；遺留根 `~/Doc/.worktrees/`、`~/Doc/_worktrees/` 存在才順手掃。dirty 偵測靠 `git worktree list` 自報、與根路徑無關
 
-**請示節奏：** 全部訊號收齊、所有建議列完，才向使用者集中請示一次；不要邊掃邊問。掃描過程中若需要動到不可逆操作（worktree remove、branch delete、merge to main 等），歸入請示清單而非當下執行。
+**請示節奏：** 全部訊號收齊、建議列完，才集中請示一次，不邊掃邊問；不可逆操作（worktree remove、branch delete、merge to main）歸入請示清單而非當下執行。
 
-每項的回報結構——三件套「現況 / 我的判斷 / 建議動作」、禁降級指代——與精簡可掃描密度，皆沿用全域 `~/.claude/CLAUDE.md`「對話回報訊息規範」，不在此重述。唯盤點報告逐欄比對更清楚時可用表格，是本節相對對話預設的差異。
+回報結構——三件套、禁止降級指代、精簡可掃描——沿用全域 `~/.claude/CLAUDE.md`「對話回報訊息規範」，不在此重述；唯逐欄比對更清楚時可用表格。
