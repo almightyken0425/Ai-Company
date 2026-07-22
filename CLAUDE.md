@@ -110,6 +110,7 @@ git -C <該層主 git> worktree add ~/Doc/ai-company-worktrees/<topic>/<layer>-<
 - **範圍：** impl 的 `src/screens/**`、`src/components/**`、`src/constants/theme.ts`（任何產品都套）；對應同 module design 的 `project/10_foundations/`（tokens）、`20_components/`（元件）、`30_screens/`（layout）。仲裁配對權威在 `products_registry.md`：design 仲裁、impl 跟進
 - **動作層面：** 動 impl UI 前必須先 Read 同 module 對應 design 範圍任一檔。`~/.claude/hooks/design-impl-alignment-guard.sh` 在 PreToolUse 攔截：同 session 已讀過放行；沒讀過擋下並明示要讀哪些路徑；design 目錄不存在自動放行
 - **例外（極窄）：** 純邏輯修補不動視覺（useEffect、data fetching、handler 邏輯），設 `export CLAUDE_SKIP_DESIGN_GUARD=1` 繞過，該 session 後續全放行；判斷由執行者擔責、濫用會回到沒對齊的爆氣循環
+- **impeccable skill 接口：** 註冊產品的設計工作一律走 decision_framework_router 與該 module 的 design git，不用 impeccable；impeccable 只用於非註冊產品的 web / artifact 場景
 
 ## Port 協作規範
 
