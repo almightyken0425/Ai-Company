@@ -8,23 +8,9 @@
 
 ## 產品列表
 
-各產品採 noN 分層結構。權威配對見 `~/.claude/skills/decision_framework_router/products_registry.md`。
+各產品採 noN 分層結構，路徑規則 `product/<產品>/<層目錄>/<module>/`。產品、module 與各層的權威配對見 `~/.claude/skills/decision_framework_router/products_registry.md`，本檔不重複列路徑。
 
-### Hatsuon
-- 規格：`product/Hatsuon/no3_product_specs/no1_pronunciation_app/`
-- 程式碼：`product/Hatsuon/no5_product_development/no1_pronunciation_app/`
-
-### SuSuGiGi
-- 規格：`product/SuSuGiGi/no3_product_specs/no2_accounting_app/`
-- 程式碼：`product/SuSuGiGi/no5_product_development/no2_accounting_app/`
-- 設計：`product/SuSuGiGi/no4_product_designs/no2_accounting_app/`
-- 後端 module `no3_cloud_functions`：規格 `product/SuSuGiGi/no3_product_specs/no3_cloud_functions/`、程式碼 `product/SuSuGiGi/no5_product_development/no3_cloud_functions/`
-- 支援站 module `no4_support_site`：程式碼 `product/SuSuGiGi/no5_product_development/no4_support_site/`（$wish 公開支援頁、Firebase Hosting）
-
-### LiquidGlassHeaderTemplate
-- 規格：`product/LiquidGlassHeaderTemplate/no3_product_specs/no1_liquid_glass_header/`（空殼）
-- 程式碼：`product/LiquidGlassHeaderTemplate/no5_product_development/no1_liquid_glass_header/`
-
-### UndergroundRemake
-- 規格：`product/UndergroundRemake/no3_product_specs/no1_concept/`
-- 程式碼：（概念階段，尚未建立）
+- **Hatsuon** — 日文發音練習 App
+- **SuSuGiGi** — 記帳 App 生態（app、後端 cloud functions、公開支援站）
+- **LiquidGlassHeaderTemplate** — RN 原生 header 模板庫
+- **UndergroundRemake** — 概念階段
