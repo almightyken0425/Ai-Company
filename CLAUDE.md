@@ -37,6 +37,7 @@ ai-company/
 - Hatsuon：`product/Hatsuon/`——`no1_pronunciation_app`（spec + impl）
 - LiquidGlassHeaderTemplate：`product/LiquidGlassHeaderTemplate/`——`no1_liquid_glass_header`（spec 空殼 + impl）
 - UndergroundRemake：`product/UndergroundRemake/`——`no1_concept`（僅 spec，概念階段）
+- IGotThis：`product/IGotThis/`——`no1_issue_system`（spec + impl，impl repo 待建，規劃完成未實作）
 
 ## 財務路徑
 - 股權原則：`finance/no1_principles/`
