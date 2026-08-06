@@ -14,6 +14,20 @@
       ],
       "port": 8765,
       "metroPort": 8081
+    },
+    {
+      "name": "igotthis-design",
+      "directory": "product/IGotThis/no4_product_designs/no1_issue_system",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8766",
+        "--directory",
+        "product/IGotThis/no4_product_designs/no1_issue_system/project"
+      ],
+      "port": 8766,
+      "metroPort": 8082
     }
   ]
 }
