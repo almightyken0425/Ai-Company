@@ -28,6 +28,19 @@
       ],
       "port": 8766,
       "metroPort": 8082
+    },
+    {
+      "name": "igotthis-web-dev",
+      "directory": "product/IGotThis/no5_product_development/no1_issue_system",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev:web",
+        "--prefix",
+        "product/IGotThis/no5_product_development/no1_issue_system"
+      ],
+      "port": 8767,
+      "metroPort": 8083
     }
   ]
 }
