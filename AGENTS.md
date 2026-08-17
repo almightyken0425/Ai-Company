@@ -9,9 +9,9 @@
 - worktree 內啟 Metro — 不行，symlinked node_modules 在 worktree 跑 Metro 必爆；Metro 只跑主 git path。見「Port 協作規範」
 - `git stash` 使用者既有的 uncommitted 改動 — 不行；改 wip commit 或停下問
 - worktree 內 `npm ci` / `npm install` / 複製 node_modules — 不行，symlink 才合規；唯一例外是主題本身動 `package.json`。見「Worktree 使用慣例」
-- Edit `~/.codex/config.toml` / `~/.codex/hooks/` / `~/.codex/agents/` / `~/.agents/skills/` — 預設不行。唯一例外：正式 plan 流程已列出改動，且使用者明示同意；commit 加 `self-modification` 標籤
-- 主 git 路徑下 Edit / Write `product/<產品>/no[34567]_*` 任一檔 — 不行，必須先在 worktree 內；`no1`、`no2`、`no99` 屬頂層 Product git，hook 不機械攔截但仍守全員 worktree。見「Worktree 使用慣例」
-- Edit impl UI 檔（`src/screens/**`、`src/components/**`、`src/constants/theme.ts`）— 必須先 Read 對應 design 檔，hook 會擋。見「Design-Impl 對齊」
+- 修改 `~/.codex/config.toml` / `~/.codex/hooks/` / `~/.codex/agents/` / `~/.agents/skills/` — 預設不行。唯一例外：正式 plan 流程已列出改動，且使用者明示同意；commit 加 `self-modification` 標籤
+- 主 git 路徑下修改 `product/<產品>/no[34567]_*` 任一檔 — 不行，必須先在 worktree 內；`no1`、`no2`、`no99` 屬頂層 Product git，hook 不機械攔截但仍守全員 worktree。見「Worktree 使用慣例」
+- 修改 impl UI 檔（`src/screens/**`、`src/components/**`、`src/constants/theme.ts`）— 必須先讀取對應 design 檔，hook 會擋。見「Design-Impl 對齊」
 - `/game-over` / `/game-clear` dry-run / 跨 git 盤點 / 多 worktree 清理 — 不分批給結果。見「盤點任務協作節奏」
 
 完整規則見全域「跨機 git 協作規範」「修改流程規範」與本檔「多產品多層 git 協作規範」「動工前置」「Worktree 使用慣例」「Port 協作規範」。本段只是濃縮自檢。
@@ -53,10 +53,11 @@ ai-company/
 - **新增產品 / 新增 module SOP：** 依 `products_registry.md` 末段變更 SOP 走檢核器迴圈——改宣告、跑 `layer-manifest-test.sh`、照 FAIL 清單補實體與文件、再檢核至全綠
 - **Spec 層職責邊界：** spec 文件的 MVC 分層政策與跨層禁止項由 spec_writer skill（含 `cross_layer_boundary_policy.md`）承載；各 spec module git 的 AGENTS.md 為入口
 - **已知邊界：** 本機 hook 僅提示層，無法保證遠端 merge 真的配對發生；要硬保證走 CI 或遠端 pre-merge 檢查
+- **規則漂移檢查：** 修改任何 `AGENTS.md` 或 `CLAUDE.md` 後，執行 `scripts/check-instruction-drift.sh`，集中驗證完整工作區 29 組配對與相容入口
 
 ## 動工前置
 
-凡動註冊產品的 spec / design / impl / quality / release 路徑，第一個 Edit / Write 之前四步全做完：
+凡動註冊產品的 spec / design / impl / quality / release 路徑，首次修改前四步全做完：
 
 1. **跑 decision_framework_router 答上游四問**（屬哪個產品 / 哪一層 / 哪個 module / 需求根因與 Product Map 對應項存在嗎）
 2. **依四問結果確認要動的層**——單層或跨多層都明確列出
@@ -109,8 +110,8 @@ git -C <該層主 git> worktree add ~/Doc/ai-company-worktrees/<topic>/<layer>-<
 凡有 design git 的產品，impl 寫 UI 時 token、component、screen layout 必須對齊 design——不擅自設值，先查 design 對應 token 與 component 結構再對應到 impl。目前只有 SuSuGiGi `no2_accounting_app` 有 design git；未來任何產品建 design git 後，本規則與 hook 自動套用。
 
 - **範圍：** impl 的 `src/screens/**`、`src/components/**`、`src/constants/theme.ts`（任何產品都套）；對應同 module design 的 `project/10_foundations/`（tokens）、`20_components/`（元件）、`30_screens/`（layout）。仲裁配對權威在 `products_registry.md`：design 仲裁、impl 跟進
-- **動作層面：** 動 impl UI 前必須先 Read 同 module 對應 design 範圍任一檔。`~/.codex/hooks/lib/guards/design-impl-alignment.sh` 在 PreToolUse 攔截：同 session 已讀過放行；沒讀過擋下並明示要讀哪些路徑；design 目錄不存在自動放行
-- **例外（極窄）：** 純邏輯修補不動視覺（useEffect、data fetching、handler 邏輯），設 `export CLAUDE_SKIP_DESIGN_GUARD=1` 繞過，該 session 後續全放行；判斷由執行者擔責、濫用會回到沒對齊的爆氣循環
+- **動作層面：** 動 impl UI 前必須先讀取同 module 對應 design 範圍任一檔。`~/.codex/hooks/lib/guards/design-impl-alignment.sh` 在 PreToolUse 攔截：同 session 已讀過放行；沒讀過擋下並明示要讀哪些路徑；design 目錄不存在自動放行
+- **例外（極窄）：** 純邏輯修補不動視覺（useEffect、data fetching、handler 邏輯），設 `export CODEX_SKIP_DESIGN_GUARD=1` 繞過；Claude 相容 alias 為 `export CLAUDE_SKIP_DESIGN_GUARD=1`。該 session 後續全放行；判斷由執行者擔責、濫用會回到沒對齊的爆氣循環
 - **impeccable skill 接口：** 註冊產品的設計工作一律走 decision_framework_router 與該 module 的 design git，不用 impeccable；impeccable 只用於非註冊產品的 web / artifact 場景
 
 ## Port 協作規範
@@ -135,7 +136,7 @@ git -C <該層主 git> worktree add ~/Doc/ai-company-worktrees/<topic>/<layer>-<
 
 - simulator 驗證一律 `/sim-review` 一鍵全自動：判別只動 JS 或動到原生、切 Metro、build、還原，流程細節與排隊規則見 `~/.agents/skills/sim-review/SKILL.md`
 - `/sim-review` 觸發以外，Codex 不主動啟、不主動切 Metro、不動 simulator——低 RAM 環境並行 Metro 會壓死系統；這兩個資源平時由使用者手動管理
-- **禁止 worktree 內 build**（`npm run ios`、`xcodebuild`、`pod install`）——各自 build 會在 DerivedData 累積 cache 爆磁碟；build 集中主 git、由 `/sim-review` 觸發。`.Codex/hooks/block-worktree-ios-build.sh` PreToolUse 機械攔截
+- **禁止 worktree 內 build**（`npm run ios`、`xcodebuild`、`pod install`）——各自 build 會在 DerivedData 累積 cache 爆磁碟；build 集中主 git、由 `/sim-review` 觸發。`.codex/hooks/block-worktree-ios-build.sh` PreToolUse 機械攔截
 - 完成改動、預期使用者想上 simulator 看時，回報「驗證位置」段引導打 `/sim-review`（見全域「驗證回報規範」內「回報訊息：simulator 走 /sim-review」）
 
 ## 盤點任務協作節奏

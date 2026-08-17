@@ -35,7 +35,7 @@ case "$VERDICT" in
 
 依「Port 協作規範」（ai-company AGENTS.md），build 一律集中在主 git 跑，
 且應由 /sim-review 自動觸發。請：
-  1. 打 /sim-review，Claude 會自動判別「只動 JS / 動到原生」並執行對應流程
+  1. 打 /sim-review，Codex 會自動判別「只動 JS / 動到原生」並執行對應流程
   2. 或 cd 到對應主 git（product/<產品>/no5_product_development/<module>/）後再執行
 EOF
     exit 2
