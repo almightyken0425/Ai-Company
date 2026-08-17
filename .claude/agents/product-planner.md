@@ -19,7 +19,7 @@ tools: Read, Glob, Grep, Write, Edit
 - 開始作業前，先判斷當前的產品背景屬於哪一種情況
 
 - 情況 A — 產品文件存在
-    - 從 `~/.claude/skills/decision_framework_router/products_registry.md` 或呼叫端 prompt 取得當前產品名稱與文件目錄路徑
+    - 從 `~/.agents/skills/decision_framework_router/products_registry.md` 或呼叫端 prompt 取得當前產品名稱與文件目錄路徑
     - 讀取該產品 no1_product_initiation/ 目錄下所有文件
     - 建立存在性論述、產品哲學、使用者旅程的完整上下文
     - 以此上下文作為後續所有回應的骨架
