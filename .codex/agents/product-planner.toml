@@ -295,7 +295,9 @@ network_access = false
 enabled = false
 
 [mcp_servers.computer-use]
+command = "/usr/bin/false"
 enabled = false
 
 [mcp_servers.node_repl]
+command = "/usr/bin/false"
 enabled = false
