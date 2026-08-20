@@ -38,6 +38,7 @@ ai-company/
 - LiquidGlassHeaderTemplate：`product/LiquidGlassHeaderTemplate/`——`no1_liquid_glass_header`（spec 空殼 + impl）
 - UndergroundRemake：`product/UndergroundRemake/`——`no1_concept`（僅 spec，概念階段）
 - IGotThis：`product/IGotThis/`——`no1_issue_system`（spec + design + impl，spec 齊備、design 與 impl 骨架階段）
+- SocialRadar：`product/SocialRadar/`——`no1_content_monitor`（spec + impl，跨平台社群巡邏分類推播機器人，首個平台 Threads）
 
 ## 財務路徑
 - 股權原則：`finance/no1_principles/`
