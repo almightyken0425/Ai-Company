@@ -57,6 +57,9 @@ EXPECTED_DIRS=(
   "product/LiquidGlassHeaderTemplate"
   "product/LiquidGlassHeaderTemplate/no3_product_specs/no1_liquid_glass_header"
   "product/LiquidGlassHeaderTemplate/no5_product_development/no1_liquid_glass_header"
+  "product/SocialRadar"
+  "product/SocialRadar/no3_product_specs/no1_content_monitor"
+  "product/SocialRadar/no5_product_development/no1_content_monitor"
   "product/SuSuGiGi"
   "product/SuSuGiGi/no2_product_planning/no2_product_map"
   "product/SuSuGiGi/no3_product_specs/no1_user_management"
@@ -77,7 +80,7 @@ EXPECTED_DIRS=(
   "product/UndergroundRemake/no3_product_specs/no1_concept"
 )
 
-EXPECTED_COUNT=29
+EXPECTED_COUNT=32
 if [[ ${#EXPECTED_DIRS[@]} -ne $EXPECTED_COUNT ]]; then
   printf 'FAIL: internal expected directory count is %s, expected %s\n' \
     "${#EXPECTED_DIRS[@]}" "$EXPECTED_COUNT" >&2
