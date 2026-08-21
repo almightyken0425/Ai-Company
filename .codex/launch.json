@@ -41,6 +41,20 @@
       ],
       "port": 8767,
       "metroPort": 8083
+    },
+    {
+      "name": "igotthis-official-website-open-source",
+      "directory": "../ai-company-worktrees/open-source/impl-no2_official_website",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8769",
+        "--directory",
+        "../ai-company-worktrees/open-source/impl-no2_official_website/public"
+      ],
+      "port": 8769,
+      "metroPort": 8084
     }
   ]
 }
