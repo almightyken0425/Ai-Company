@@ -41,20 +41,6 @@
       ],
       "port": 8767,
       "metroPort": 8083
-    },
-    {
-      "name": "igotthis-design-create-issue-bar",
-      "directory": "../ai-company-worktrees/create-issue-bar/design-no1_issue_system",
-      "runtimeExecutable": "python3",
-      "runtimeArgs": [
-        "-m",
-        "http.server",
-        "8768",
-        "--directory",
-        "../ai-company-worktrees/create-issue-bar/design-no1_issue_system/project"
-      ],
-      "port": 8768,
-      "metroPort": 8084
     }
   ]
 }
